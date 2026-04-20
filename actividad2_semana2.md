@@ -76,17 +76,30 @@
  la operación add(1, 15) es la que mejor muestra el costo por desplazamientos, porque obliga a mover los elementos desde el índice 1 hacia la derecha. También remove(0) muestra el desplazamiento inverso, pero add es más claro para explicar el costo O(n-i).
 
 3. En `demo_fastarraystack.cpp`, ¿qué cambia en la implementación aunque no cambie la complejidad asintótica?
+
+ Cambia la implementación interna de la pila de arreglo para mejorar el manejo de redimensionamiento o transferencia de datos, aunque la complejidad asintótica de add(i,x) y remove(i) sigue siendo del mismo orden. Es decir, la interfaz y el costo asintótico permanecen, pero la estructura interna es más eficiente en detalles de implementación.
+
 4. En `demo_rootisharraystack_explicado.cpp`, ¿qué ejemplo explica mejor el mapeo de índice lógico a bloque y offset?
+
+ El ejemplo que imprime el mapeo de índice lógico a bloque y offset —la función print_location(s, i) con locate(i)— es el que mejor explica ese mapeo. Ese fragmento muestra explícitamente indice lógico -> bloque, offset.
+
 5. En `demo_deng_vector.cpp`, ¿qué observable permite defender el crecimiento de `capacity`?
+ 
+ El observable que permite defender el crecimiento de capacity es la serie de mensajes tras cada insert: size= y capacity=. Se ve cómo capacity crece por encima de size a medida que se insertan elementos.
+
 6. En `demo_stl_vector_contraste.cpp`, ¿qué similitud conceptual observan con `DengVector`?
+
+ La similitud conceptual con DengVector es que ambos mantienen size y capacity separadas y crecen en bloques para permitir inserciones amortizadas al final. Ambos son vectores dinámicos basados en arreglo contiguo.
+
 7. ¿Qué demo sirve mejor para defender **amortización** y cuál sirve mejor para defender **uso de espacio**?
+
  Para defender mejor la **amortizacion** es 
  demo_stl_vector_contraste.cpp, porque muestra directamente push_back con size y capacity y permite hablar de crecimiento amortizado. 
  Y para defender mejor el **uso de espacio** es demo_rootisharraystack_explicado.cpp, porque visualiza cómo los bloques de tamaños 1,2,3,... reducen el desperdicio espacial respecto a un arreglo completo.
 
 #### Bloque 3-Pruebas publicas, stress y correctitud
  
- 
+
 
 
 
