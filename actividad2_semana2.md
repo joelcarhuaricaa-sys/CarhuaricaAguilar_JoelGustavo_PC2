@@ -98,7 +98,38 @@
  Y para defender mejor el **uso de espacio** es demo_rootisharraystack_explicado.cpp, porque visualiza cómo los bloques de tamaños 1,2,3,... reducen el desperdicio espacial respecto a un arreglo completo.
 
 #### Bloque 3-Pruebas publicas, stress y correctitud
- 
+
+1. ¿Qué operaciones mínimas valida la prueba pública para `ArrayStack`?
+
+ La prueba pública para ArrayStack valida operaciones mínimas como add (al final y en posición específica), get, size y remove en posiciones intermedias, asegurando que el tamaño se actualice correctamente y que los elementos se desplacen apropiadamente.
+
+2. ¿Qué operaciones mínimas valida la prueba pública para `FastArrayStack`?
+
+ La prueba pública para FastArrayStack valida operaciones mínimas como add (al final y en posición específica), get, size y remove al inicio, verificando que el tamaño y los elementos se mantengan consistentes tras inserciones y remociones.
+
+3. ¿Qué operaciones mínimas valida la prueba pública para `RootishArrayStack`?
+
+ La prueba pública para RootishArrayStack valida operaciones mínimas como add en posiciones específicas, get, set, size y remove, confirmando que el acceso y modificación funcionen correctamente en un arreglo distribuido en bloques.
+
+4. ¿Qué sí demuestra una prueba pública sobre una estructura?
+
+ Una prueba pública demuestra que las operaciones básicas de inserción, lectura, actualización y eliminación funcionan correctamente en casos simples, y que la estructura mantiene invariantes básicos como el tamaño y el acceso a elementos.
+
+5. ¿Qué no demuestra una prueba pública?
+
+ Una prueba pública no demuestra la complejidad temporal de las operaciones, el uso eficiente de espacio, el comportamiento en casos extremos o de borde, ni explica por qué el diseño es óptimo en términos de costo amortizado o invariantes avanzados.
+
+6. En `resize_stress_week2.cpp`, ¿qué comportamiento intenta estresar sobre crecimiento, reducción o estabilidad?
+
+ En resize_stress_week2.cpp, el comportamiento que intenta estresar es el crecimiento (inserciones masivas al final o inicio), la reducción (remociones masivas desde diferentes posiciones) y la estabilidad (mantener consistencia tras operaciones intensas, como en DengVector con inserciones y remociones alternadas).
+
+7. ¿Por qué pasar pruebas no reemplaza una explicación de invariantes y complejidad?
+
+ Pasar pruebas no reemplaza una explicación de invariantes y complejidad porque las pruebas verifican correctitud empírica en casos específicos, pero no proporcionan el razonamiento teórico sobre por qué el algoritmo mantiene propiedades globales, qué costo amortizado justifica su eficiencia, o cómo se relacionan representación, tiempo y espacio en general. Se necesita análisis matemático y conceptual además de validación práctica.
+
+#### Bloque 4-Vector como puente entre teoría y código
+
+
 
 
 
