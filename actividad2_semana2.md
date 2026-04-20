@@ -80,6 +80,14 @@
 5. En `demo_deng_vector.cpp`, ¿qué observable permite defender el crecimiento de `capacity`?
 6. En `demo_stl_vector_contraste.cpp`, ¿qué similitud conceptual observan con `DengVector`?
 7. ¿Qué demo sirve mejor para defender **amortización** y cuál sirve mejor para defender **uso de espacio**?
+ Para defender mejor la **amortizacion** es 
+ demo_stl_vector_contraste.cpp, porque muestra directamente push_back con size y capacity y permite hablar de crecimiento amortizado. 
+ Y para defender mejor el **uso de espacio** es demo_rootisharraystack_explicado.cpp, porque visualiza cómo los bloques de tamaños 1,2,3,... reducen el desperdicio espacial respecto a un arreglo completo.
+
+#### Bloque 3-Pruebas publicas, stress y correctitud
+ 
+ 
+
 
 
  
