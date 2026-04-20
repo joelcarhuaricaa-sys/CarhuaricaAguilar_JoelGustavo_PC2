@@ -7,7 +7,7 @@
 
 1.  Expliquen con sus palabras qué significa que un arreglo use **memoria contigua**.
 
-   Se hace referencia a que todos sus elementos están pegados unos a otros, sin huecos, formando un solo bloque físico en la memoria RAM del equipo.Esto nos da una velocidad de lectura increíble, pero nos obliga a hacer mucho trabajo manual **desplazar datos** cuando queremos alterar ese orden.
+   Se hace referencia a que todos sus elementos están pegados unos a otros, sin huecos, formando un solo bloque físico en la memoria RAM del equipo.Esto nos da una velocidad de lectura increíble, pero nos obliga a hacer mucho trabajo manual **desplazar datos** cuando queremos alterar ese orden..
 
 2.  Expliquen por qué acceder a `A[i]` es una operación de costo `O(1)`.
 
