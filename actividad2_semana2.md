@@ -1,4 +1,4 @@
-# Actividad 2 Semana 2- CC232
+# Actividad 2 - CC232
 
 ### INTEGRANTES
 - Joel Gustavo Carhuarica Aguilar
