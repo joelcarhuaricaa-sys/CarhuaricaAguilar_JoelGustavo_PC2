@@ -1,9 +1,9 @@
 # Actividad 2 Semana 2- CC232
 
-### Integrantes
+### INTEGRANTES
 - Joel Gustavo Carhuarica Aguilar
 
-#### Bloque 1 - Núcleo conceptual de Semana2
+#### BLOQUE 1 - NUCLEO CONCEPTUAL DE LA SEMANA
 
 1.  Expliquen con sus palabras qué significa que un arreglo use **memoria contigua**.
 
@@ -54,7 +54,7 @@
 
  **Desperdicio Espacial:** Si queremos desperdiciar muy poco espacio (como en RootishArrayStack), la estructura se vuelve más compleja y el cálculo de la posición del índice es ligeramente más lento (requiere una raíz cuadrada o aritmética más compleja).
 
-#### Bloque 2 - Demostración y trazado guiado
+#### BLOQUE 2 - DEMOSTRACION Y TRAZADO GUIADO
  
 | Archivo | Salida u observable importante | Idea estructural | Argumento de costo o espacio |
 |---|---|---|---|
@@ -97,7 +97,7 @@
  demo_stl_vector_contraste.cpp, porque muestra directamente push_back con size y capacity y permite hablar de crecimiento amortizado. 
  Y para defender mejor el **uso de espacio** es demo_rootisharraystack_explicado.cpp, porque visualiza cómo los bloques de tamaños 1,2,3,... reducen el desperdicio espacial respecto a un arreglo completo.
 
-#### Bloque 3-Pruebas publicas, stress y correctitud
+#### BLOQUE 3 - PRUEBAS PUBLICAS, STRESS Y CORRECTITUD
 
 1. ¿Qué operaciones mínimas valida la prueba pública para `ArrayStack`?
 
@@ -127,7 +127,7 @@
 
  Pasar pruebas no reemplaza una explicación de invariantes y complejidad porque las pruebas verifican correctitud empírica en casos específicos, pero no proporcionan el razonamiento teórico sobre por qué el algoritmo mantiene propiedades globales, qué costo amortizado justifica su eficiencia, o cómo se relacionan representación, tiempo y espacio en general. Se necesita análisis matemático y conceptual además de validación práctica.
 
-#### Bloque 4-Vector como puente entre teoría y código
+#### BLOQUE 4 - VECTOR COMO PUENTE ENTRE TEORIA Y CODIGO 
 
 1. ¿Qué papel cumplen `_size`, `_capacity` y `_elem`?
 
@@ -161,7 +161,7 @@
 
  Implementar un vector propio permite comprender los mecanismos internos de gestión de memoria dinámica, expansión, reducción y análisis amortizado, proporcionando una base sólida antes de usar la implementación optimizada de std::vector.
 
-#### Bloque 5 - RootishArrayStack: espacio y mapeo
+#### BLOQUE 5 - ROOTISHARRAYSTACK: ESPACIO Y MAPEO
 
 1. ¿Cómo se distribuyen los elementos entre bloques?
 
@@ -191,7 +191,7 @@
 
 El mapeo (la función i2b y locate) parece más difícil de defender oralmente, ya que requiere explicar la fórmula cuadrática y cómo traduce índices lógicos a posiciones físicas sin ejemplos visuales claros. El análisis espacial y el costo amortizado son más intuitivos con diagramas o cálculos simples.
 
-#### Bloque 6-Refuerzo de lectura 
+#### BLOQUE 6 - REFUERZO DE LECTURA 
 
 1. ¿Qué aporta `operator[]` a la idea de vector?
 
@@ -209,25 +209,37 @@ El mapeo (la función i2b y locate) parece más difícil de defender oralmente, 
  
  Esta lectura sirve como refuerzo natural de DengVector porque explica los fundamentos teóricos del vector (como rango, memoria contigua, gestión dinámica y operaciones ADT), conectando directamente con la implementación práctica de DengVector en el código
 
-#### Bloque 7 - Cierre comparativo
+#### BLOQUE 7 - CIERRE COMPARATIVO
 
 Respondan esta pregunta final:
 
 **¿Qué cambia cuando pasamos de "usar un arreglo" a "diseñar una estructura dinámica basada en arreglo"?**
 
-1. Afirmación sobre representación
+1. **Afirmación sobre representación**
   La representación cambia de un bloque de memoria contigua fijo a una estructura con puntero al arreglo (_elem), tamaño lógico (_size) y capacidad física (_capacity), permitiendo crecimiento dinámico sin reasignaciones constantes.
 
-2. Afirmación sobre correctitud
+2. **Afirmación sobre correctitud**
   Se añaden invariantes como _size ≤ _capacity y copia profunda en constructores/asignaciones para evitar aliasing y asegurar que cada instancia maneje su propia memoria, garantizando comportamiento predecible en modificaciones.
 
-3. Afirmación sobre costo amortizado
+3. **Afirmación sobre costo amortizado**
   Las operaciones de inserción al final alcanzan O(1) amortizado mediante duplicación de capacidad, distribuyendo el costo de expansiones O(n) sobre secuencias largas, en lugar de costos lineales por inserción en arreglos estáticos.
 
-4. Afirmación sobre uso de espacio
+4. **Afirmación sobre uso de espacio**
   Se introduce el factor de carga (_size/_capacity) para equilibrar disponibilidad y eficiencia, con políticas de expansión (duplicación) y reducción (shrink) que minimizan desperdicio, a diferencia del espacio fijo o sobredimensionado de arreglos estáticos.
 
-5. Comparación entre `ArrayStack`, `FastArrayStack` y `RootishArrayStack`
+5. **Comparación entre `ArrayStack`, `FastArrayStack` y `RootishArrayStack`**
   ArrayStack es básico con crecimiento lineal (incremento fijo), lo que causa expansiones frecuentes y desperdicio; FastArrayStack mejora duplicando capacidad para O(1) amortizado en push/pop, reduciendo reasignaciones; RootishArrayStack usa bloques de tamaños crecientes (1, 2, 3, ...) para minimizar espacio (factor de carga ~1) sin perder interfaz de lista, equilibrando eficiencia temporal y espacial mejor que los otros.
 
-### Autoevaluación (Versión Breve)
+### AUTOEVALUACION BREVE
+
+- Qué podemos defender con seguridad:
+
+  Los conceptos básicos de memoria contigua, diferencia entre size y capacity, justificación del costo amortizado O(1) para inserciones al final mediante duplicación de capacidad, y la comparación entre ArrayStack, FastArrayStack y RootishArrayStack en términos de representación y eficiencia espacial.
+
+- Qué todavía confundimos:
+
+ Los detalles específicos del mapeo de índices en RootishArrayStack (como i2b y locate) y cómo se relaciona exactamente con el análisis amortizado de grow/shrink en escenarios de reducción.
+
+- Qué evidencia usaríamos en una sustentación:
+ 
+ Demos como demo_deng_vector.cpp para crecimiento de capacity, pruebas públicas para validar operaciones mínimas, Lectura4-Deng para fundamentos teóricos del vector, y trazados de código en ArrayStack vs. RootishArrayStack para ilustrar diferencias en uso de espacio.
