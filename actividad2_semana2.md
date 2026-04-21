@@ -11,7 +11,7 @@
 
 2.  Expliquen por qué acceder a `A[i]` es una operación de costo `O(1)`.
 
-   *Porque gracias a la memoria contigua, la dirección de cualquier elemento se calcula con una fórmula aritmética simple:
+   Porque gracias a la memoria contigua, la dirección de cualquier elemento se calcula con una fórmula aritmética simple:
               Direccioˊn=Direccioˊn Base+(i×taman˜o del dato)
  Como el computador solo necesita realizar una multiplicación y una suma para hallar la ubicación exacta, el tiempo de acceso es constante e independiente del tamaño del arreglo.
 3. Expliquen la diferencia entre `size` y `capacity`.
@@ -30,7 +30,7 @@
 6. Comparen `ArrayStack` y `DengVector`: ¿qué comparten y qué cambia en interfaz o intención didáctica?
 
  - Comparten: Ambos usan un arreglo de respaldo, gestionan capacidad/tamaño y tienen inserción con desplazamientos.
- - Diferencias: * Interfaz: DengVector es más cercano al std::vector de C++, incluyendo operaciones como find, traverse y sobrecarga de operator[].
+ - Diferencias: Interfaz: DengVector es más cercano al std::vector de C++, incluyendo operaciones como find, traverse y sobrecarga de operator[].
 
     Intención: ArrayStack se enfoca en la eficiencia de la interfaz List y su relación con otras estructuras como DualArrayDeque. DengVector tiene un enfoque más pedagógico sobre el ciclo de vida del objeto.
 
@@ -163,7 +163,33 @@
 
 #### Bloque 5 - RootishArrayStack: espacio y mapeo
 
+1. ¿Cómo se distribuyen los elementos entre bloques?
 
+ Los elementos se distribuyen en bloques de arreglos de tamaños crecientes: el bloque 0 tiene capacidad 1, el bloque 1 tiene capacidad 2, el bloque 2 tiene capacidad 3, y así sucesivamente. Cada bloque almacena una porción contigua lógica de la secuencia, y el índice lógico se mapea a un bloque específico y un offset dentro de ese bloque.
+
+2. ¿Por qué con `r` bloques la capacidad total es `r(r+1)/2`?
+
+ Porque la capacidad de cada bloque es igual a su índice más uno (bloque b tiene capacidad b+1), y la suma de los primeros r números naturales (1 + 2 + ... + r) es r(r+1)/2. Esto representa el espacio total disponible en los r bloques.
+
+3. ¿Qué problema resuelve `i2b(i)`?
+
+ `i2b(i)`resuelve el problema de determinar en qué bloque se encuentra el elemento en el índice lógico i. Usa la fórmula cuadrática derivada de la suma triangular para calcular el bloque b donde i pertenece, evitando la necesidad de buscar linealmente.
+
+4. ¿Qué información produce `locate(i)` en la versión explicada?
+
+ `locate(i)` produce un par (bloque, offset), donde "bloque" es el índice del bloque que contiene el elemento en el índice lógico i, y "offset" es la posición dentro de ese bloque.
+
+5. ¿Qué se gana en espacio frente a `ArrayStack`?
+
+ Se gana en espacio al reducir el desperdicio: en lugar de reservar un arreglo grande con capacidad potencialmente mucho mayor que el tamaño actual (como en ArrayStack con duplicación), RootishArrayStack usa bloques de tamaños variables que se ajustan mejor al número de elementos, minimizando el espacio no utilizado.
+
+6. ¿Qué se conserva igual respecto a la interfaz?
+
+ Se conserva la interfaz de List, con operaciones como size(), get(i), set(i, x), add(i, x) y remove(i), manteniendo la semántica de acceso y modificación por índice.
+
+7. ¿Qué parte les parece más difícil de defender oralmente: el mapeo, el análisis espacial o el costo amortizado de `grow/shrink`?
+
+El mapeo (la función i2b y locate) parece más difícil de defender oralmente, ya que requiere explicar la fórmula cuadrática y cómo traduce índices lógicos a posiciones físicas sin ejemplos visuales claros. El análisis espacial y el costo amortizado son más intuitivos con diagramas o cálculos simples.
 
 
 
