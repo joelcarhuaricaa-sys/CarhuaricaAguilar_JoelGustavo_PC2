@@ -129,6 +129,41 @@
 
 #### Bloque 4-Vector como puente entre teoría y código
 
+1. ¿Qué papel cumplen `_size`, `_capacity` y `_elem`?
+
+ - `_size`: Representa el número actual de elementos válidos en el vector, es decir, cuántos elementos están realmente almacenados.
+ - `_capacity`: Indica el espacio total reservado en memoria para el arreglo interno, que puede ser mayor que _size para permitir crecimiento dinámico.
+ - `_elem`: Es un puntero al arreglo dinámico que almacena los elementos del vector en memoria contigua.
+
+2. ¿Cuándo debe ejecutarse `expand()`?
+
+ `expand()` debe ejecutarse cuando _size alcanza _capacity, es decir, cuando no hay espacio suficiente para insertar un nuevo elemento sin reasignar memoria.
+
+3. ¿Por qué `insert(r, e)` necesita desplazar elementos?
+
+ Para insertar un elemento en la posición r, los elementos desde r hasta el final deben desplazarse una posición hacia la derecha para liberar espacio en r, manteniendo el orden secuencial.
+
+4. ¿Qué diferencia conceptual hay entre `remove(r)` y `remove(lo, hi)`?
+
+ **remove(r)** elimina un solo elemento en la posición específica r.
+
+ **remove(lo, hi)** elimina un rango de elementos desde la posición lo hasta hi-1, permitiendo la eliminación de múltiples elementos consecutivos en una sola operación.
+
+5. ¿Qué evidencia de copia profunda aparece en la demo?
+
+ En la demo, se crea una copia del vector (ods::DengVector<int> copia(v);) y se modifica independientemente (aplicando increaseByOne a la copia), lo que demuestra que la copia tiene su propia memoria y no afecta al vector original, evidenciando copia profunda en el constructor de copia.
+
+6. ¿Por qué `traverse()` es una buena interfaz didáctica?
+
+ `traverse()` permite aplicar una función o functor a cada elemento del vector, ilustrando conceptos de iteración, procesamiento uniforme y polimorfismo sin exponer detalles internos, facilitando el aprendizaje de patrones de visita.
+
+7. ¿Qué ventaja tiene implementar un vector propio antes de depender de `std::vector`?
+
+ Implementar un vector propio permite comprender los mecanismos internos de gestión de memoria dinámica, expansión, reducción y análisis amortizado, proporcionando una base sólida antes de usar la implementación optimizada de std::vector.
+
+#### Bloque 5 - RootishArrayStack: espacio y mapeo
+
+
 
 
 
