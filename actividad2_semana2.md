@@ -191,8 +191,43 @@
 
 El mapeo (la función i2b y locate) parece más difícil de defender oralmente, ya que requiere explicar la fórmula cuadrática y cómo traduce índices lógicos a posiciones físicas sin ejemplos visuales claros. El análisis espacial y el costo amortizado son más intuitivos con diagramas o cálculos simples.
 
+#### Bloque 6-Refuerzo de lectura 
 
+1. ¿Qué aporta `operator[]` a la idea de vector?
 
+ El **`operator[]`** aporta acceso directo y natural al vector mediante índices, recuperando el estilo intuitivo del arreglo sin renunciar a la encapsulación del ADT, lo que mejora la claridad del código y facilita el modelo mental del programador.
 
+2. ¿Qué supone `find(e)` sobre igualdad entre elementos?
 
+ **`find(e)`** supone que existe una noción de igualdad entre elementos (probablemente mediante operator==), ya que busca secuencialmente un elemento idéntico a e en el vector no ordenado, devolviendo el rango de mayor coincidencia o -1 si no existe.
+
+3. ¿Qué muestra `traverse()` sobre procesamiento uniforme de toda la estructura?
+
+ **`traverse()`** muestra que el vector soporta procesamiento uniforme aplicando la misma transformación o acción a cada elemento, permitiendo tratar la estructura como un todo con costo lineal en el tamaño multiplicado por el costo de la operación por elemento.
+
+4. ¿Por qué esta lectura sirve como refuerzo natural de `DengVector` aunque no sea el centro exclusivo de la semana?
  
+ Esta lectura sirve como refuerzo natural de DengVector porque explica los fundamentos teóricos del vector (como rango, memoria contigua, gestión dinámica y operaciones ADT), conectando directamente con la implementación práctica de DengVector en el código
+
+#### Bloque 7 - Cierre comparativo
+
+Respondan esta pregunta final:
+
+**¿Qué cambia cuando pasamos de "usar un arreglo" a "diseñar una estructura dinámica basada en arreglo"?**
+
+1. Afirmación sobre representación
+  La representación cambia de un bloque de memoria contigua fijo a una estructura con puntero al arreglo (_elem), tamaño lógico (_size) y capacidad física (_capacity), permitiendo crecimiento dinámico sin reasignaciones constantes.
+
+2. Afirmación sobre correctitud
+  Se añaden invariantes como _size ≤ _capacity y copia profunda en constructores/asignaciones para evitar aliasing y asegurar que cada instancia maneje su propia memoria, garantizando comportamiento predecible en modificaciones.
+
+3. Afirmación sobre costo amortizado
+  Las operaciones de inserción al final alcanzan O(1) amortizado mediante duplicación de capacidad, distribuyendo el costo de expansiones O(n) sobre secuencias largas, en lugar de costos lineales por inserción en arreglos estáticos.
+
+4. Afirmación sobre uso de espacio
+  Se introduce el factor de carga (_size/_capacity) para equilibrar disponibilidad y eficiencia, con políticas de expansión (duplicación) y reducción (shrink) que minimizan desperdicio, a diferencia del espacio fijo o sobredimensionado de arreglos estáticos.
+
+5. Comparación entre `ArrayStack`, `FastArrayStack` y `RootishArrayStack`
+  ArrayStack es básico con crecimiento lineal (incremento fijo), lo que causa expansiones frecuentes y desperdicio; FastArrayStack mejora duplicando capacidad para O(1) amortizado en push/pop, reduciendo reasignaciones; RootishArrayStack usa bloques de tamaños crecientes (1, 2, 3, ...) para minimizar espacio (factor de carga ~1) sin perder interfaz de lista, equilibrando eficiencia temporal y espacial mejor que los otros.
+
+### Autoevaluación (Versión Breve)
