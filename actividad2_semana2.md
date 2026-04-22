@@ -7,7 +7,7 @@
 
 1.  Expliquen con sus palabras qué significa que un arreglo use **memoria contigua**.
 
-   Se hace referencia a que todos sus elementos están pegados unos a otros, sin huecos, formando un solo bloque físico en la memoria RAM del equipo.Esto nos da una velocidad de lectura increíble, pero nos obliga a hacer mucho trabajo manual **desplazar datos** cuando queremos alterar ese orden.
+   Se hace referencia a que todos sus elementos están pegados unos a otros, sin huecos, formando un solo bloque físico en la memoria RAM del equipo.Esto nos da una velocidad de lectura increíble, pero nos obliga a hacer mucho trabajo manual **desplazar datos** cuando queremos alterar ese orden..
 
 2.  Expliquen por qué acceder a `A[i]` es una operación de costo `O(1)`.
 
@@ -234,7 +234,17 @@ Respondan esta pregunta final:
 
 - Qué podemos defender con seguridad:
 
-  Los conceptos básicos de memoria contigua, diferencia entre size y capacity, justificación del costo amortizado O(1) para inserciones al final mediante duplicación de capacidad, y la comparación entre ArrayStack, FastArrayStack y RootishArrayStack en términos de representación y eficiencia espacial.
+ Fundamentos de Memoria: El concepto de memoria contigua como base de la eficiencia del caché (O(1) en acceso aleatorio por aritmética de punteros).
+
+ Gestión Dinámica: La distinción clara entre size (elementos presentes) y capacity (espacio total reservado).
+
+ Costo Amortizado: La justificación matemática de por qué la duplicación de capacidad convierte un costo O(n) en un promedio O(1), demostrando que el "pago" por los crecimientos se distribuye entre las inserciones.
+
+ Comparativa de Eficiencia: * ArrayStack: El estándar con desperdicio de espacio lineal.
+
+    FastArrayStack: Optimización mediante System.arraycopy o std::copy para operaciones de bloque.
+
+    RootishArrayStack: El enfoque basado en bloques de tamaño incremental (1,2,3,…,k) para minimizar el desperdicio de espacio a O(raiz de n​).
 
 - Qué todavía confundimos:
 
@@ -242,4 +252,12 @@ Respondan esta pregunta final:
 
 - Qué evidencia usaríamos en una sustentación:
  
- Demos como demo_deng_vector.cpp para crecimiento de capacity, pruebas públicas para validar operaciones mínimas, Lectura4-Deng para fundamentos teóricos del vector, y trazados de código en ArrayStack vs. RootishArrayStack para ilustrar diferencias en uso de espacio.
+ .Demostraciones en Vivo (Demos): * demo_vector_growth.cpp: Para visualizar cómo la dirección de memoria cambia solo cuando la capacidad se agota.
+
+    Scripts de trazado de memoria que comparen el "Internal Fragmentation" entre un ArrayStack y un RootishArrayStack.
+
+ .Pruebas de Estrés: Gráficas de tiempo de ejecución donde se observe la "escalera" del costo O(n) en momentos de crecimiento, diluida en la tendencia O(1).
+
+ .Base Teórica: Referencias directas a la Lectura de Deng sobre vectores y la estructura de Pat Morin (Open Data Structures) para la validación del desperdicio de espacio O(n​).
+
+ .Diagramas de Memoria: Comparación visual de un arreglo único vs. la lista de bloques (blocks list) de un RootishArrayStack.
