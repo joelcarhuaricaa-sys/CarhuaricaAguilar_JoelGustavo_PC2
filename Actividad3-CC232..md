@@ -402,4 +402,40 @@ consulta de mínimo?
  "Implementar una estructura" significa crearla desde cero con lógica específica, como `MinStack`, que extiende `SLList` con entradas que rastrean mínimos acumulados. "Adaptar una estructura existente" significa reutilizar una implementación base delegando operaciones, como `LinkedStack`, que adapta `SLList` para comportamiento LIFO sin modificar la lista subyacente.
 
 8. ¿Qué operaciones pueden defender como constantes y cuáles deben defender como amortizadas?
+
  Operaciones constantes: `size()`, `empty()`, `top()` en `LinkedStack`, `front()` en `LinkedQueue`, `front()` y `back()` en `LinkedDeque` (sin rebalanceo), y `min()` en todas las estructuras min-. Amortizadas: `push()` y `pop()` en `MinStack` (debido a comparaciones), `add()` y `remove()` en `MinQueue` (por movimientos entre pilas), y operaciones en `MinDeque` (debido al rebalanceo periódico).
+
+#### BLOQUE6 - DENG COMO REFUERZO ALGORITMICO Y PUENTE DE INTEGRACION 
+
+1. ¿Qué operaciones del ADT de lista aparecen reforzadas en `DengList`?
+
+ `DengList` refuerza operaciones avanzadas como `sort()` (ordenamiento estable), `dedup()` (eliminación de duplicados consecutivos), `uniquify()` (eliminación de todos los duplicados) y `reverse()` (inversión de la lista), que no están presentes en las listas básicas de Semana 3 como `DLList` o `SEList`. Estas se implementan aprovechando la interfaz rica de `CleanList`.
+
+2. ¿Qué ventaja tiene encapsular una lista más rica sin cambiar el resto de estructuras de Semana 3?
+
+ Permite agregar funcionalidades avanzadas (como algoritmos de ordenamiento y deduplicación) sin modificar el código existente de `DLList`, `SEList` u otras estructuras, manteniendo compatibilidad, reutilización y evitando riesgos de introducir errores en implementaciones ya probadas.
+
+3. Expliquen qué hacen `to_deng` y `assign_from_deng`.
+
+ `to_deng` convierte una `DLList` o `SEList` en una `DengList` copiando todos los elementos mediante iteración y `push_back`.
+ `assign_from_deng` copia los elementos de una `DengList` de vuelta a una `DLList` o `SEList`, limpiando primero la estructura destino y agregando elementos uno por uno.
+
+4. Expliquen por qué `stable_sort_with_deng` no obliga a reimplementar ordenamiento dentro de `DLList` o `SEList`.
+
+ Porque reutiliza el método `sort()` de `DengList`, que está implementado en `CleanList`. La función convierte la estructura original a `DengList`, aplica el ordenamiento y luego asigna los resultados de vuelta, evitando reescribir la lógica de ordenamiento en cada estructura base.
+
+5. Expliquen qué hace `dedup_with_deng` y qué relación guarda con `deduplicate()
+` o `uniquify()` de la teoría.
+
+ `dedup_with_deng` elimina duplicados consecutivos en una `DLList` o `SEList` usando el método `dedup()` de `DengList`, que opera sobre la conversión temporal.
+ Se relaciona con `deduplicate()` o `uniquify()` de la teoría, ya que ambas eliminan duplicados, pero `dedup` se enfoca en consecutivos (más eficiente), mientras que `uniquify` elimina todos, requiriendo orden previo.
+
+6. Expliquen por qué `reverse_with_deng` es un ejemplo de reutilización de algoritmos sobre una interfaz común.
+
+ `reverse_with_deng` aplica el método `reverse()` de `DengList` a estructuras de Morin (`DLList` o `SEList`) mediante conversión, demostrando reutilización al aprovechar una interfaz común (`DengList`) para algoritmos que no están implementados directamente en las estructuras base, sin duplicar código.
+
+7. ¿Qué costo adicional introduce la conversión entre estructuras y cuándo vale la pena aceptarlo?
+
+ Introduce costo adicional en tiempo (O(n) para copiar elementos) y espacio (duplicación temporal de la lista).
+ Vale la pena cuando el algoritmo es complejo o no implementado en la estructura original, priorizando reutilización y mantenibilidad sobre rendimiento en casos donde n es pequeño o las operaciones son infrecuentes.
+
