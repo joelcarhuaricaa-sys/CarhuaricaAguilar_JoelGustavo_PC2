@@ -430,20 +430,20 @@ Por qué `dummy` elimina casos borde:
 
 `spread(Node* u)` - Expande cuando los bloques están llenos
 
- void spread(Node* u) {
-     // Crea b nodos nuevos
-     Node* w = u;
-     for (int j = 0; j < b; ++j) w = w->next;
-     w = addBefore(w);
+     void spread(Node* u) {
+          // Crea b nodos nuevos
+          Node* w = u;
+          for (int j = 0; j < b; ++j) w = w->next;
+          w = addBefore(w);
     
-     // Redistribuye elementos: mueve del penúltimo al nuevo bloque
-     while (w != u) {
-         while (w->d.size() < b) {
-             w->d.add(0, w->prev->d.remove(w->prev->d.size() - 1));
-         }
-         w = w->prev;
+          // Redistribuye elementos: mueve del penúltimo al nuevo bloque
+          while (w != u) {
+              while (w->d.size() < b) {
+                  w->d.add(0, w->prev->d.remove(w->prev->d.size() - 1));
+              }
+              w = w->prev;
+          }
      }
- }
 
 **Cuándo aparece:** Al insertar en una posición donde hay bloques llenos.
 `gather(Node* u)` - Compacta cuando los bloques están vacíos
