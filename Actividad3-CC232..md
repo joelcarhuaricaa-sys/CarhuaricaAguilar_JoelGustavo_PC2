@@ -248,141 +248,53 @@ Porque:
 
 3. Expliquen cómo funciona `secondLast()` y por qué no puede resolverse directamente con solo mirar `tail`.
 
-     T secondLast() const { 
-         assert(n >= 2);
-         Node* u = head;
-         while (u->next != tail) { // Busca hasta encontrar el penúltimo
-             u = u->next;
-         }
-         return u->x;
-     }
-
-- Por qué no funciona con solo `tail`:
-
-    - `tail` solo apunta al último nodo, no al penúltimo.
-    - En una lista **simplemente enlazad a**, cada nodo solo conoce al siguiente, no al anterior.
-    - Para encontrar el penúltimo, necesariamente hay que recorrer desde `head` hasta llegar a un nodo cuyo `next` sea `tail`.
-    - Costo:**O(n)**.
+ `secondLast()` recorre desde `head` hasta encontrar el nodo cuyo `next` es `tail`. No puede resolverse solo mirando `tail` porque en `SLList` los nodos solo apuntan hacia adelante; el último nodo no tiene referencia al anterior, así que no hay forma de acceder directamente al penúltimo sin recorrer la lista desde el inicio.
 
 4. Expliquen paso a paso cómo funciona`reverse()` y por qué no necesita estructura auxiliar.
 
-     void reverse() {
-         Node* prev = nullptr;    // Nodo "anterior" en el orden nuevo
-         Node* curr = head;       // Nodo actual siendo procesado
-         tail = head;             // El head será el nuevo tail
-    
-         while (curr != nullptr) {
-             Node* next = curr->next;  // Guarda el siguiente antes de cambiar
-             curr->next = prev;         // Invierte: apunta hacia atrás
-             prev = curr;               // Avanza prev
-             curr = next;               // Avanza curr
-         }
-         head = prev;              // prev quedó apuntando al último nodo
-     }
+`reverse()` recorre la lista una vez y va invirtiendo cada enlace `next` en el camino.
 
-**Por que no necesita estructura auxiliar:**
-
-  - Solo necesita tres punteros temporales (`prev`, `curr`, `next`).
-  - Reutiliza el mismo espacio de nodos sin crear nuevos.
-  - Los cambios de referencias se hacen **in-place**.
-  - Costo: **O(n)** tiempo, **O(1)** espacio adicional.
+ - Empieza con `prev = nullptr` y `curr = head`.
+ - En cada iteración guarda `next = curr->next`, luego cambia `curr->next` para que apunte a `prev`.
+ - Después avanza: `prev = curr`, `curr = next`.
+ - Al terminar, el antiguo `head` quedó como `tail`, y `head` se actualiza a `prev`, que es el último nodo procesado.
+ 
+No necesita estructura auxiliar porque invierte los enlaces sobre los propios nodos usando solo punteros temporales; no crea nodos nuevos ni copia los datos.
 
 5. Expliquen qué verifica `checkSize()` y por qué esta función ayuda a defender correctitud.
 
-     bool checkSize() const {
-         int count = 0;
-         Node* u = head;
-         Node* last = nullptr;
-    
-         while (u != nullptr) {
-             last = u;
-             u = u->next;
-             ++count;  // Cuenta elementos reales
-         }
-    
-         // Valida que el contador coincida
-         if (count != n) return false;
-    
-         // Valida casos extremos
-         if (n == 0) return head == nullptr && tail == nullptr;
-    
-         // Valida que tail apunte realmente al último
-         return head != nullptr && tail == last;
-     }
-
-**Ayuda defender correctitud porque:**
-
-   - Detecta corrupción del contador `n`.
-   - Verifica que `tail` realmente apunte al último nodo.
-   - Identifica invariantes rotos (cabeza y cola inconsistentes).
-   - Es esencial para pruebas de estrés y debugging.
+ `checkSize()` recorre la lista contando nodos y luego compara ese conteo con el valor almacenado en `n`. También verifica que, si la lista está vacía, `head` y `tail` sean `nullptr`, y si no lo está, que `tail` apunte realmente al último nodo encontrado. Esto ayuda a defender correctitud porque detecta inconsistencias en el tamaño y en los punteros de la estructura antes de que se propaguen errores.
 
 6. En `DLList`, expliquen por qué `getNode(i)` puede empezar desde el inicio o desde el final.
 
-     Node* getNode(int i) {
-         assert(0 <= i && i <= n);
-         Node* p;
-    
-         if (i < n / 2) {           // Si está en la primera mitad
-             p = dummy.next;        // Empieza desde el inicio
-             for (int j = 0; j < i; ++j) p = p->next;
-         } else {                   // Si está en la segunda mitad
-             p = &dummy;            // Empieza desde el final (dummy es circular)
-             for (int j = n; j > i; --j) p = p->prev;  // Retrocede
-         }
-         return p;
-     } 
+En `DLList`, `getNode(i)` puede empezar desde el inicio o desde el final porque cada nodo tiene punteros `next` y `prev`.
 
-**Ventaja:**
+ - Si `i` está en la primera mitad de la lista, conviene partir desde `dummy.next` y avanzar hacia adelante.
+ - Si i está en la segunda mitad, conviene partir desde `dummy`/final y retroceder con `prev`.
 
-  - Para elementos cercanos al final, retroceder es más rápido que avanzar.
-  - Reduce el número de saltos a approximately `min(i, n-i)`.
-  - Costo amortizado: **O(1 + min(i, n-i))**.
+Así se usa el recorrido más corto posible, aprovechando la doble dirección de la lista para buscar en tiempo `O(1 + min(i, n-i))` en lugar de siempre recorrer desde un solo extremo.
 
 7. En `DLList::addBefore`, ¿qué enlaces se actualizan y por qué el nodo centinela elimina casos borde?
 
-     Node* addBefore(Node* w, const T& x) {
-         Node* u = new Node{x, w->prev, w};  // Crear nodo con ambos enlaces
-         u->prev->next = u;  // El anterior de w ahora apunta a u
-         u->next->prev = u;  // w ahora tiene a u como anterior
-         ++n;
-         return u;
-     }
+En `DLList::addBefore`, se inserta un nuevo nodo justo antes de un nodo existente w actualizando estos enlaces:
 
-**Enlaces actualizados:**
-
-   1. `u->prev` y `u->next` (del nodo nuevo)
-   2. `(u->prev)->next` (enlace forward del anterior)
-   3. `(u->next)->prev` (enlace backward de w)
-
-Por qué `dummy` elimina casos borde:
-
-   - No hay que distinguir inserción al inicio vs. en medio.
-   - `dummy` es simultáneamente predecesor del primero y sucesor del último.
-   - La lista vacía se trata uniformemente: todos los nodos apuntan a `dummy`.
-   - Simplifica la lógica: una sola función para todas las posiciones.
+ - El nuevo nodo recibe `w->prev` como su anterior y `w` como su siguiente.
+ - El nodo que antes era previo de `w` ahora apunta hacia el nuevo nodo con su `next`.
+ - El nodo `w` actualiza su `prev` para apuntar al nuevo nodo.
+  
+El centinela `dummy` elimina casos borde porque siempre existe un nodo
+“ficticio” en los extremos. Así, insertar antes del primer elemento o antes del nodo `dummy` al final usa la misma lógica que insertar en el medio, sin tener que tratar por separado la lista vacía o el inicio y el fin.
 
 8. Expliquen cómo funciona `rotate(r)` sin mover los datos elemento por elemento.
 
-     void rotate(int r) {
-         if (n <= 1) return;
-         r %= n;
-         if (r == 0) return;
-    
-         // Identifica dónde cortar
-         Node* oldFirst = dummy.next;      // Primer nodo actual
-         Node* oldLast = dummy.prev;       // Último nodo actual
-         Node* newFirst = getNode(n - r);  // Nuevo primer nodo (r posiciones del final)
-         Node* newLast = newFirst->prev;   // Lo que era antes del nuevo primero
-    
-         // Reorganiza enlaces sin mover datos
-         oldLast->next = oldFirst;         // Cierra el ciclo
-         oldFirst->prev = oldLast;
-         newLast->next = &dummy;           // Nuevo corte
-         dummy.prev = newLast;
-         dummy.next = newFirst;
-         newFirst->prev = &dummy;
-     }
+`Rotate(r)` cambia el “inicio lógico” de la lista realizando un ajuste de punteros, no moviendo los valores de los nodos.
+
+  - Primero calcula el nuevo primer nodo como el nodo en posición `n - r`.
+  - Luego toma el último nodo actual y lo enlaza con el primer nodo actual, cerrando temporalmente la lista circularmente.
+  - Después corta la lista en el punto correcto: el nuevo último nodo pone su next en el nodo centinela `dummy`, y el nuevo primer nodo recibe `dummy` como su `prev`.
+  - Finalmente actualiza `dummy.next` y `dummy.prev` para que reflejen el nuevo primer y último nodo.
+     
+De esta forma la secuencia lógica cambia de comienzo, pero los datos permanecen en los mismos nodos; solo se reorganizan los enlaces.
 
 **Sin mover datos:**
 
@@ -392,19 +304,7 @@ Por qué `dummy` elimina casos borde:
 
 9. Expliquen cómo `isPalindrome()` aprovecha la naturaleza doblemente enlazada de la estructura.
 
-     bool isPalindrome() const {
-         const Node* left = dummy.next;    // Empieza desde el inicio
-         const Node* right = dummy.prev;   // Empieza desde el final
-    
-         for (int i = 0; i < n / 2; ++i) {
-              if (!(left->x == right->x)) {  // Compara elementos opuestos
-                  return false;
-              }
-              left = left->next;             // Avanza desde el inicio
-              right = right->prev;           // Retrocede desde el final
-         }
-         return true;
-     } 
+ `isPalindrome()` usa dos punteros: uno desde el inicio (`left = dummy.next`) y otro desde el final (`right = dummy.prev`). Luego compara elementos emparejados avanzando `left` hacia adelante y `right` hacia atrás. La lista doblemente enlazada hace esto posible porque cada nodo conoce tanto su siguiente como su anterior, de modo que se puede recorrer simultáneamente en ambos sentidos sin invertir la lista ni copiar sus datos.
 
 **Ventaja de ser doblemente enlazada:**
 
@@ -414,18 +314,13 @@ Por qué `dummy` elimina casos borde:
 
 10. En `SEList`, expliquen qué representa `Location`.
 
-     struct Location {
-         Node* u;  // Puntero al bloque (nodo) que contiene el elemento
-         int j;    // Índice dentro del bloque
-     };
+En `SEList`, `Location` representa una posición dentro de la estructura en dos partes: 
 
-**Propósito:**
+ - `u` es el bloque (`Node`) donde está el elemento.
+ - `j` es el índice dentro de ese bloque.
 
-  - Descompone un índice global `i` en dos coordenadas.
-  - `i` se traduce a "estar en el bloque `u`, en posición `j` dentro del bloque".
-  - Permite acceder directamente a un elemento sin recorrer toda la lista.
-  - Ejemplo: si bloques tienen tamaño 3 e `i=7` → bloque 2, posición 1 dentro del bloque.
-
+Así, en lugar de buscar el elemento directamente por `i` en una lista enlazada simple, `Location` convierte ese índice global en la ubicación concreta: “está en el bloque `u` y en la posición `j` dentro de ese bloque”.
+ 
 11. Expliquen qué hacen `spread()` y `gather()` y en qué situaciones aparecen.
 
 `spread(Node* u)` - Expande cuando los bloques están llenos
@@ -474,3 +369,37 @@ Por qué `dummy` elimina casos borde:
 | **Costo amortizado** | O(n) peor distribución | O(n) mejor distribución |
 
 Compromiso óptimo: b ≈ sqrt(n) o configuración estática (típicamente 3-5) da buen balance general.
+
+#### BLOQUE5 - ADAPTADORES Y ESTRUCTURAS DERIVADAS
+
+1. ¿Cómo reutiliza `LinkedStack` a `SLList`?
+
+ `LinkedStack` reutiliza `SLList` delegando las operaciones principales: push llama a `list.push(x)`, `pop` a `list.pop()`, y `top` a `list.peek()`. Esto aprovecha la eficiencia de inserción y eliminación en el frente de la lista simplemente enlazada.
+
+2. ¿Cómo reutiliza `LinkedQueue` a `SLList`?
+
+ `LinkedQueue` reutiliza `SLList` de manera similar: `add` llama a `list.add(x)` (agrega al final), `remove` a `list.remove()` (elimina del frente), y `front` a `list.peek()`. Utiliza la lista como una cola FIFO, con inserción al final y eliminación del frente.
+
+3. ¿Por qué `LinkedDeque` se construye naturalmente sobre `DLList` y no sobre `SLList`?
+
+ `LinkedDeque` se construye sobre `DLList` porque un deque requiere acceso eficiente a ambos extremos (frente y atrás). `DLList` permite inserciones y eliminaciones en cualquier posición (incluyendo extremos) en tiempo constante, mientras que `SLList` solo es eficiente en un extremo, lo que haría las operaciones en el otro extremo costosas.
+
+4. En `MinStack`, ¿por qué cada entrada guarda el valor y el mínimo acumulado?
+
+ En `MinStack`, cada entrada guarda el valor y el mínimo acumulado para permitir consultas de mínimo en O(1). Al hacer `push`, se compara el nuevo valor con el mínimo actual del tope y se guarda el menor, acumulando el mínimo histórico sin necesidad de recorrer la pila.
+
+5. En `MinQueue`, ¿por qué usar dos pilas permite mantener semántica FIFO y 
+consulta de mínimo?
+
+ En `MinQueue`, usar dos pilas (`in_` y `out_`) permite mantener semántica FIFO: `in_` recibe nuevos elementos, y `out_` se usa para remover del frente (moviendo elementos de `in_` a `out_` cuando es necesario, invirtiendo el orden). Cada pila mantiene su propio mínimo, y el mínimo global se obtiene comparando los mínimos de ambas pilas.
+
+6. En `MinDeque`, ¿qué problema resuelve el rebalanceo entre `front_` y `back_`?
+
+ En `MinDeque`, el rebalanceo entre `front_` y `back_` resuelve el problema de mantener operaciones eficientes en ambos extremos. Cuando una pila se vacía, se reconstruye el deque dividiendo los elementos en dos mitades equilibradas, asegurando que ambas pilas tengan elementos y evitando degradación de rendimiento en accesos consecutivos a un extremo.
+
+7. Comparen "implementar una estructura" y "adaptar una estructura existente" usando ejemplos de este bloque.
+
+ "Implementar una estructura" significa crearla desde cero con lógica específica, como `MinStack`, que extiende `SLList` con entradas que rastrean mínimos acumulados. "Adaptar una estructura existente" significa reutilizar una implementación base delegando operaciones, como `LinkedStack`, que adapta `SLList` para comportamiento LIFO sin modificar la lista subyacente.
+
+8. ¿Qué operaciones pueden defender como constantes y cuáles deben defender como amortizadas?
+ Operaciones constantes: `size()`, `empty()`, `top()` en `LinkedStack`, `front()` en `LinkedQueue`, `front()` y `back()` en `LinkedDeque` (sin rebalanceo), y `min()` en todas las estructuras min-. Amortizadas: `push()` y `pop()` en `MinStack` (debido a comparaciones), `add()` y `remove()` en `MinQueue` (por movimientos entre pilas), y operaciones en `MinDeque` (debido al rebalanceo periódico).
