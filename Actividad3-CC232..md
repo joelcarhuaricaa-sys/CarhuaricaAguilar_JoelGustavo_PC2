@@ -177,10 +177,15 @@ Los algoritmos son agnósticos a la estructura subyacente si existe un contrato 
 8. ¿Qué sí demuestra una prueba pública sobre una estructura enlazada?
 
     ✅ Contrato funcional cumplido:
+
        - Las operaciones devuelven valores correctos
+
        - El tamaño se mantiene consistente
+       
        - Las relaciones de orden (FIFO, LIFO) se respetan
+       
        - La estructura no crash en operaciones secuenciales 
+
     ✅ Correctitud local:
 
        - Para los casos de uso probados, no hay fallos evidentes
