@@ -439,3 +439,33 @@ consulta de mínimo?
  Introduce costo adicional en tiempo (O(n) para copiar elementos) y espacio (duplicación temporal de la lista).
  Vale la pena cuando el algoritmo es complejo o no implementado en la estructura original, priorizando reutilización y mantenibilidad sobre rendimiento en casos donde n es pequeño o las operaciones son infrecuentes.
 
+#### BLOQUE7 - COMPARACION ENLAZADO VS CONTIGUO, VARIANTES Y EVIDENCIA EXPERIMENTAL
+
+1. Comparen `ArrayDeque` y `LinkedDeque`: ¿qué cambia en representación y qué cambia en costo observable?
+
+ `ArrayDeque` usa un arreglo dinámico contiguo para almacenar elementos, con índices para acceso directo y redimensionamiento cuando es necesario. `LinkedDeque` usa nodos enlazados con referencias prev/next, permitiendo inserciones/eliminaciones eficientes en extremos. En costo observable, `ArrayDeque` tiene acceso O(1) por índice y mejor localidad de memoria (más rápido en recorridos secuenciales), pero inserciones/eliminaciones en posiciones intermedias son O(n) por desplazamientos. `LinkedDeque` tiene inserciones/eliminaciones O(1) en extremos, pero acceso por índice O(n) y peor localidad (más overhead por punteros).
+
+2. ¿Qué significa que una representación contigua tenga mejor localidad de memoria?
+
+ Significa que los elementos están almacenados en posiciones consecutivas de memoria, lo que mejora el aprovechamiento del caché del procesador, reduce fallos de caché y acelera accesos secuenciales o cercanos, ya que el hardware puede prefetch datos eficientemente.
+
+3. ¿Qué tipo de operaciones favorecen más a la representación enlazada?
+
+ Operaciones que involucran inserciones y eliminaciones frecuentes en posiciones arbitrarias (especialmente extremos), donde el costo de ajuste de referencias es bajo comparado con el desplazamiento de elementos en arreglos contiguos.
+
+4. En el benchmark, ¿qué comparación sirve mejor para discutir acceso aleatorio y cuál sirve mejor para discutir operaciones en extremos?
+
+ Para acceso aleatorio: `random_get_arraydeque` vs `random_get_dllist`, ya que mide tiempos de acceso por índice en estructuras contigua vs enlazada. Para operaciones en extremos: `deque_contiguo_arraydeque` vs `deque_enlazado_linkeddeque`, que evalúa inserciones/eliminaciones en extremos (add/remove en ambos lados).
+
+5. ¿Por qué el benchmark no debe leerse como prueba absoluta de superioridad de una estructura sobre otra?
+
+ Porque los resultados dependen de factores como tamaño de datos, patrón de operaciones, hardware (caché, memoria), implementación específica y constantes ocultas; es evidencia experimental para patrones concretos, no una comparación universal, ya que estructuras pueden ser superiores en contextos diferentes.
+
+6. ¿Qué idea intenta mostrar `XorList` respecto al ahorro de punteros?
+
+ Muestra cómo usar XOR para combinar punteros prev y next en un solo campo por nodo, reduciendo el espacio de memoria al eliminar un puntero explícito, aprovechando que prev ^ next = link, permitiendo navegación bidireccional con menos overhead.
+
+7. ¿Qué desventaja práctica introduce una estructura como `XorList` aunque sea interesante desde el punto de vista del espacio?.
+
+ Introduce mayor complejidad en la implementación y mantenimiento, con riesgo de errores en manipulación de punteros XOR, falta de compatibilidad con recolectores de basura estándar, y dificultad para depuración, ya que no es una estructura común y requiere cuidado extra en operaciones.
+
