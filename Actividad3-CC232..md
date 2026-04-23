@@ -479,4 +479,27 @@ consulta de mínimo?
  - **Una afirmación sobre complejidad de `SLList`, `DLList` y `SEList`**: `SLList` ofrece complejidad O(1) para operaciones de pila y cola; `DLList` permite acceso y modificación en O(1 + min(i, n-i)) aprovechando enlaces bidireccionales; `SEList` combina bloques para acceso amortizado O(1 + i/b) y actualizaciones locales eficientes, equilibrando espacio y tiempo.
  - **Una afirmación sobre reutilización mediante adaptadores o puentes**: La reutilización mediante adaptadores (como `LinkedStack` sobre `SLList`) o puentes (como `MorinDengBridge`) permite implementar interfaces nuevas sobre estructuras existentes sin reescribir lógica, facilitando composición y evitando duplicación de código.
  - **Una comparación entre representación contigua y enlazada**: La representación contigua (arreglos) favorece acceso aleatorio y localidad de memoria para recorridos secuenciales, mientras que la enlazada prioriza modificaciones locales y flexibilidad espacial, con trade-offs en complejidad y overhead.
+
+#### AUTOEVALUCION BREVE
+
+**Qué podemos defender con seguridad**:
+
+ - SLList: push/pop O(1); buena para Stack/Queue, no para Deque
+ - DLList: getNode(i) → O(1 + min(i, n-i)); centinela elimina casos especiales
+ - Adaptadores reutilizan estructuras sin reescribir
+ - MinStack/MinQueue: min() en O(1) guardando mínimo acumulado
  
+**Qué todavía confundimos**:
+
+ - Por qué DLList es O(1 + min(i, n-i)) y SLList es O(i)
+ - Caso especial: pop() con 1 elemento → head = tail = nullptr
+ - Rol exacto del centinela `dummy`
+ - Cuándo SEList vale la pena vs DLList simple
+ 
+**Qué evidencia usaríamos**:
+
+ - Ejecutar demos: `sem3_demo_sllist`, `sem3_demo_dllist`, `sem3_demo_selist`
+ - Mostrar código: qué punteros cambian en push(), reverse(), getNode(i)
+ - Pasar `test_public_week3` con casos borde (lista vacía, 1 elemento)
+ - Defender invariante: head → primer nodo, tail → último nodo, n = count
+
