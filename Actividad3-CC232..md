@@ -248,14 +248,14 @@ Porque:
 
 3. Expliquen cómo funciona `secondLast()` y por qué no puede resolverse directamente con solo mirar `tail`.
 
- T secondLast() const { 
-     assert(n >= 2);
-     Node* u = head;
-     while (u->next != tail) { // Busca hasta encontrar el penúltimo
-         u = u->next;
+     T secondLast() const { 
+         assert(n >= 2);
+         Node* u = head;
+         while (u->next != tail) { // Busca hasta encontrar el penúltimo
+             u = u->next;
+         }
+         return u->x;
      }
-     return u->x;
- }
 
 - Por qué no funciona con solo `tail`:
 
@@ -266,19 +266,19 @@ Porque:
 
 4. Expliquen paso a paso cómo funciona`reverse()` y por qué no necesita estructura auxiliar.
 
- void reverse() {
-     Node* prev = nullptr;    // Nodo "anterior" en el orden nuevo
-     Node* curr = head;       // Nodo actual siendo procesado
-     tail = head;             // El head será el nuevo tail
+     void reverse() {
+         Node* prev = nullptr;    // Nodo "anterior" en el orden nuevo
+         Node* curr = head;       // Nodo actual siendo procesado
+         tail = head;             // El head será el nuevo tail
     
-     while (curr != nullptr) {
-         Node* next = curr->next;  // Guarda el siguiente antes de cambiar
-         curr->next = prev;         // Invierte: apunta hacia atrás
-         prev = curr;               // Avanza prev
-         curr = next;               // Avanza curr
+         while (curr != nullptr) {
+             Node* next = curr->next;  // Guarda el siguiente antes de cambiar
+             curr->next = prev;         // Invierte: apunta hacia atrás
+             prev = curr;               // Avanza prev
+             curr = next;               // Avanza curr
+         }
+         head = prev;              // prev quedó apuntando al último nodo
      }
-     head = prev;              // prev quedó apuntando al último nodo
- }
 
 **Por que no necesita estructura auxiliar:**
 
@@ -289,26 +289,26 @@ Porque:
 
 5. Expliquen qué verifica `checkSize()` y por qué esta función ayuda a defender correctitud.
 
- bool checkSize() const {
-     int count = 0;
-     Node* u = head;
-     Node* last = nullptr;
+     bool checkSize() const {
+         int count = 0;
+         Node* u = head;
+         Node* last = nullptr;
     
-     while (u != nullptr) {
-         last = u;
-         u = u->next;
-         ++count;  // Cuenta elementos reales
+         while (u != nullptr) {
+             last = u;
+             u = u->next;
+             ++count;  // Cuenta elementos reales
+         }
+    
+         // Valida que el contador coincida
+         if (count != n) return false;
+    
+         // Valida casos extremos
+         if (n == 0) return head == nullptr && tail == nullptr;
+    
+         // Valida que tail apunte realmente al último
+         return head != nullptr && tail == last;
      }
-    
-     // Valida que el contador coincida
-     if (count != n) return false;
-    
-     // Valida casos extremos
-     if (n == 0) return head == nullptr && tail == nullptr;
-    
-     // Valida que tail apunte realmente al último
-     return head != nullptr && tail == last;
- }
 
 **Ayuda defender correctitud porque:**
 
@@ -319,19 +319,19 @@ Porque:
 
 6. En `DLList`, expliquen por qué `getNode(i)` puede empezar desde el inicio o desde el final.
 
- Node* getNode(int i) {
-     assert(0 <= i && i <= n);
-     Node* p;
+     Node* getNode(int i) {
+         assert(0 <= i && i <= n);
+         Node* p;
     
-     if (i < n / 2) {           // Si está en la primera mitad
-         p = dummy.next;        // Empieza desde el inicio
-         for (int j = 0; j < i; ++j) p = p->next;
-     } else {                   // Si está en la segunda mitad
-         p = &dummy;            // Empieza desde el final (dummy es circular)
-         for (int j = n; j > i; --j) p = p->prev;  // Retrocede
-     }
-     return p;
- }
+         if (i < n / 2) {           // Si está en la primera mitad
+             p = dummy.next;        // Empieza desde el inicio
+             for (int j = 0; j < i; ++j) p = p->next;
+         } else {                   // Si está en la segunda mitad
+             p = &dummy;            // Empieza desde el final (dummy es circular)
+             for (int j = n; j > i; --j) p = p->prev;  // Retrocede
+         }
+         return p;
+     } 
 
 **Ventaja:**
 
@@ -341,13 +341,13 @@ Porque:
 
 7. En `DLList::addBefore`, ¿qué enlaces se actualizan y por qué el nodo centinela elimina casos borde?
 
- Node* addBefore(Node* w, const T& x) {
-     Node* u = new Node{x, w->prev, w};  // Crear nodo con ambos enlaces
-     u->prev->next = u;  // El anterior de w ahora apunta a u
-     u->next->prev = u;  // w ahora tiene a u como anterior
-     ++n;
-     return u;
- }
+     Node* addBefore(Node* w, const T& x) {
+         Node* u = new Node{x, w->prev, w};  // Crear nodo con ambos enlaces
+         u->prev->next = u;  // El anterior de w ahora apunta a u
+         u->next->prev = u;  // w ahora tiene a u como anterior
+         ++n;
+         return u;
+     }
 
 **Enlaces actualizados:**
 
@@ -364,25 +364,25 @@ Por qué `dummy` elimina casos borde:
 
 8. Expliquen cómo funciona `rotate(r)` sin mover los datos elemento por elemento.
 
- void rotate(int r) {
-     if (n <= 1) return;
-     r %= n;
-     if (r == 0) return;
+     void rotate(int r) {
+         if (n <= 1) return;
+         r %= n;
+         if (r == 0) return;
     
-     // Identifica dónde cortar
-     Node* oldFirst = dummy.next;      // Primer nodo actual
-     Node* oldLast = dummy.prev;       // Último nodo actual
-     Node* newFirst = getNode(n - r);  // Nuevo primer nodo (r posiciones del final)
-     Node* newLast = newFirst->prev;   // Lo que era antes del nuevo primero
+         // Identifica dónde cortar
+         Node* oldFirst = dummy.next;      // Primer nodo actual
+         Node* oldLast = dummy.prev;       // Último nodo actual
+         Node* newFirst = getNode(n - r);  // Nuevo primer nodo (r posiciones del final)
+         Node* newLast = newFirst->prev;   // Lo que era antes del nuevo primero
     
-     // Reorganiza enlaces sin mover datos
-     oldLast->next = oldFirst;         // Cierra el ciclo
-     oldFirst->prev = oldLast;
-     newLast->next = &dummy;           // Nuevo corte
-     dummy.prev = newLast;
-     dummy.next = newFirst;
-     newFirst->prev = &dummy;
- }
+         // Reorganiza enlaces sin mover datos
+         oldLast->next = oldFirst;         // Cierra el ciclo
+         oldFirst->prev = oldLast;
+         newLast->next = &dummy;           // Nuevo corte
+         dummy.prev = newLast;
+         dummy.next = newFirst;
+         newFirst->prev = &dummy;
+     }
 
 **Sin mover datos:**
 
@@ -392,19 +392,19 @@ Por qué `dummy` elimina casos borde:
 
 9. Expliquen cómo `isPalindrome()` aprovecha la naturaleza doblemente enlazada de la estructura.
 
- bool isPalindrome() const {
-     const Node* left = dummy.next;    // Empieza desde el inicio
-     const Node* right = dummy.prev;   // Empieza desde el final
+     bool isPalindrome() const {
+         const Node* left = dummy.next;    // Empieza desde el inicio
+         const Node* right = dummy.prev;   // Empieza desde el final
     
-     for (int i = 0; i < n / 2; ++i) {
-         if (!(left->x == right->x)) {  // Compara elementos opuestos
-             return false;
+         for (int i = 0; i < n / 2; ++i) {
+              if (!(left->x == right->x)) {  // Compara elementos opuestos
+                  return false;
+              }
+              left = left->next;             // Avanza desde el inicio
+              right = right->prev;           // Retrocede desde el final
          }
-         left = left->next;             // Avanza desde el inicio
-         right = right->prev;           // Retrocede desde el final
-     }
-     return true;
- } 
+         return true;
+     } 
 
 **Ventaja de ser doblemente enlazada:**
 
@@ -414,10 +414,10 @@ Por qué `dummy` elimina casos borde:
 
 10. En `SEList`, expliquen qué representa `Location`.
 
- struct Location {
-     Node* u;  // Puntero al bloque (nodo) que contiene el elemento
-     int j;    // Índice dentro del bloque
-};
+     struct Location {
+         Node* u;  // Puntero al bloque (nodo) que contiene el elemento
+         int j;    // Índice dentro del bloque
+     };
 
 **Propósito:**
 
@@ -446,19 +446,20 @@ Por qué `dummy` elimina casos borde:
      }
 
 **Cuándo aparece:** Al insertar en una posición donde hay bloques llenos.
+
 `gather(Node* u)` - Compacta cuando los bloques están vacíos
 
- void gather(Node* u) {
-     // Mueve elementos hacia atrás desde bloques casi vacíos
-     Node* w = u;
-     for (int j = 0; j < b - 1; ++j) {
-         while (w->d.size() < b) {
-             w->d.add(w->next->d.remove(0));
-         }
+     void gather(Node* u) {
+          // Mueve elementos hacia atrás desde bloques casi vacíos
+          Node* w = u;
+          for (int j = 0; j < b - 1; ++j) {
+              while (w->d.size() < b) {
+                  w->d.add(w->next->d.remove(0));
+                }
          w = w->next;
+         }
+         removeNode(w);  // Elimina el bloque ahora vacío
      }
-     removeNode(w);  // Elimina el bloque ahora vacío
- }
 
 **Cuándo aparece:** Al eliminar, si un bloque cae por debajo del umbral mínimo.
 
