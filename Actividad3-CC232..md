@@ -45,7 +45,7 @@
 
  DengList sirve como una implementación más simple y didáctica de listas basada en Deng, enfocada en operaciones básicas y algoritmos como ordenamiento. No reemplaza a las estructuras de Morin porque estas ofrecen análisis de complejidad más detallado, optimizaciones específicas (como dummy en DLList o bloques en SEList) y comparación directa con representaciones contiguas, siendo más adecuadas para estudiar trade-offs en el curso.
 
-#### Bloque 2 - Demostración y trazado guiado
+#### BLOQUE2 - DEMOSTRACION Y TRAZADO GUIADO
 
 | Archivo |	Salida u observable importante | Idea estructural |	Argumento de costo, espacio o diseño |
 |---|---|---|---|
@@ -89,4 +89,136 @@
 8. En `demo_contiguous_vs_linked.cpp`, ¿qué contraste se observa entre acceso por índice, inserción local y localidad de memoria?
 
  El contraste es que el acceso por índice es más directo en la estructura contigua (`ArrayDeque`), la inserción local es más natural en la estructura enlazada (`DLList`/`LinkedDeque`), y la memoria contigua ofrece mejor localidad frente a la dispersión de punteros en la lista enlazada.
+
+#### BLOQUE3 - PRUEBAS PUBLICAS, STRESS Y CORRECTITUD
+
+1. ¿Qué operaciones mínimas valida la prueba pública para `SLList`?
+
+ En test_public_week3.cpp:
+
+ - `add(x)` — agregar elemento
+ - `push(x)` — operación tipo pila
+ - `size()` — contar elementos
+ - `peek()` — ver el tope
+ - `pop()` — remover tope
+ - `remove()` — remover primer elemento
+
+ **Resultado:** Solo operaciones en los extremos (cabeza y cola) sin acceso por posición intermedia.
+
+2. ¿Qué operaciones mínimas valida la prueba pública para `DLList`?
+ 
+ En `test_public_week3.cpp`:
+
+ - `add(i, x)` — agregar en posición `i`
+ - `get(i)` — acceder en posición `i`
+ - `remove(i)` — remover en posición `i`
+ - `size()` — contar elementos
+
+  **Resultado:** Acceso aleatorio y modificaciones puntuales en posiciones arbitrarias.
+
+3. ¿Qué operaciones mínimas valida la prueba pública para `SEList`?
+ 
+ En test_public_week3.cpp:
+
+ - `add(i, x)` — agregar en posición `i`
+ - `get(i)` — acceder en posición `i`
+ - `set(i, x)` — reemplazar en posición `i` y devolver anterior
+ - `remove(i)` — remover en posición `i`
+ - `size()` — contar elementos
+
+ **Resultado:** Operaciones fundamentales por índice, similar a DLList pero sin acceso a nodos interme­dios directamente.
+
+4. ¿Qué operaciones nuevas quedan cubiertas por `test_public_extras.cpp`?
+ 
+  Nuevas operaciones/métodos:
+
+ - `to_vector()` — convertir a std::vector (SLList, DLList)
+ - `secondLast()` — acceder penúltimo elemento (SLList)
+ - `reverse()` — invertir orden (SLList, DLList)
+ - `checkSize()` — validar consistencia interna (SLList, DLList)
+ - `rotate(r)` — rotación circular (DLList)
+ - `isPalindrome()` — validar estructura simétrica (DLList)
+ - `min()` — operación especializada (MinStack, MinQueue, MinDeque)
+ - `addFirst()`, `addLast()`, `removeLast()` — operaciones extremos (MinDeque, XorList)
+
+5. ¿Qué valida específicamente `test_public_linked_adapters.cpp` sobre `LinkedStack`, `LinkedQueue` y `LinkedDeque`?
+
+ - **LinkedStack**: `push()`, `pop()`, `top()`, `empty()`, `size()`     — comportamiento LIFO correcto
+ 
+ - **LinkedQueue**: `add()`, `remove()`, `front()`, `empty()`, `size()` — comportamiento FIFO correcto
+
+ - **LinkedDeque**: `addFirst()`, `addLast()`, `removeFirst()`, `removeLast()`, `front()`, `back()`, `empty()`, `size()` — todas las operaciones de extremos funcionan.
+
+ **Idea central**: Valida que los adaptadores heredan correctamente el comportamiento de la estructura subyacente sin mutations semánticas.
+
+6. ¿Qué demuestra `test_public_deng_bridge.cpp` sobre integración y reutilización?
+- **DengList directo**:  `push_back() `,  `push_front() `,  `add() `,  `front() `,  `back() `,  `get() `,  `find_index() `,  `contains() ` funcionan
+
+- **Algoritmos sobre Morin + Deng**:
+
+   - `stable_sort_with_deng() ` convierte DLList/SEList a DengList, ordena, convierte de vuelta.
+   -  `dedup_with_deng() ` elimina duplicados reutilizando el ADT de Deng
+   -  `reverse_with_deng() ` invierte sin reimplementar
+
+- **Bridge permite**:
+   - Reutilizar **algoritmos de Deng** sin reescribir estructuras Morin
+   - Conversión transparente entre representaciones
+
+Los algoritmos son agnósticos a la estructura subyacente si existe un contrato claro.
+
+7. En `stress_selist_week3.cpp`, ¿qué comportamiento intenta estresar sobre crecimiento, borrado y mantenimiento del tamaño lógico?
+  
+  1. Crecimiento orgánico de bloques: 500 inserciones consecutivas para forzar subdivisiones internas de celdas B
+
+  2. Borrado frontal sostenido: 250 eliminaciones desde el inicio para validar reorganización de bloques y mantenimiento de invariantes
+
+  3. Mantenimiento del tamaño lógico: Al final, debe cumplir exactamente size() == 350 (500 - 250 + 100), demostrando que nunca se pierde consistencia interno-externa
+
+8. ¿Qué sí demuestra una prueba pública sobre una estructura enlazada?
+
+    ✅ Contrato funcional cumplido:
+       - Las operaciones devuelven valores correctos
+       - El tamaño se mantiene consistente
+       - Las relaciones de orden (FIFO, LIFO) se respetan
+       - La estructura no crash en operaciones secuenciales 
+    ✅ Correctitud local:
+
+       - Para los casos de uso probados, no hay fallos evidentes
+
+    ✅ No hay memory leaks obvios (si corre sin SIGSEGV)
+
+
+9. ¿Qué no demuestra una prueba pública por sí sola?
+
+❌ No valida:
+
+   - **Invariantes de punteros**: ¿Todos los nodos han sido visitables desde la cabeza?
+   - **Integridad de enlaces**: ¿`next` de nodo i es realmente el nodo i+1?
+   - **Complejidad temporal**: Las operaciones cumplen O(1),O(logn),(n)?
+   - **Localidad de memoria**: ¿SEList mantiene caché-locality?
+   - **Comportamiento en edge cases internos**: Nodos centinela, bloques vacíos, expansiones
+   - **Eficiencia espacial**: ¿Hay fragmentación interna, overhead de punteros?
+   - **Correctitud semántica profunda**: ¿Por qué get(i) es O(1+min(i,n−i)) en DLList?
+
+10. ¿Por qué pasar pruebas no reemplaza una explicación de invariantes, punteros y complejidad?
+
+Porque:
+
+  1. **Pruebas son casos finitos, teoría es universal**: Una prueba con n≤500 no garantiza corrección en n=10^6 
+
+  2. **Invariantes son el "por qué"**:
+
+     - Saber que DLList::remove(i) cuesta O(1+min(i,n−i))explica por qué la estructura es válida
+     - Una prueba que "pasa" puede ser por suerte de acceso a posiciones balanceadas
+
+  3. **Punteros son el mecanismo**:
+
+     - Ver pasar assertions no explica cómo dummy y enlaces bidireccionales previenen segmentation faults
+     - El enlace prev es esencial para rotate(), no opcional
+
+  4. **Complejidad espacial oculta**:
+
+     - Una prueba puede pasar pero el overhead de punteros hace SEList ineficiente en memoria
+
+  5. **Reutilización confiable**: Cuando adaptes la estructura (ejemplo: SEList a BDeque), necesitas entender los invariantes para no romper la abstracción
 
