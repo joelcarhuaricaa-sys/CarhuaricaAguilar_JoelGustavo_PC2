@@ -58,3 +58,35 @@
 |`demo_linked_adapters.cpp` | Resultados de `LinkedStack`, `LinkedQueue`, `LinkedDeque` con operaciones adaptadas | Adaptadores que brindan interfaces nuevas sobre estructuras enlazadas |	Reutiliza la estructura enlazada subyacente para implementar interfaces de `Stack`, `Queue` y `Deque` sin reescribir los nodos básicos.|
 |`demo_contiguous_vs_linked.cpp` | Comparación `ArrayDeque` vs `DLList`: FIFO, deque e índice |	Contrasta estructura contigua con estructura enlazada |	`ArrayDeque` gana en acceso por índice y localidad de memoria; `DLList` gana en inserción local y flexibilidad de enlaces.|
 
+1. En `demo_sllist.cpp`, ¿qué secuencia deja más clara la coexistencia de comportamiento tipo pila y tipo cola dentro de `SLList`?
+
+ `demo_sllist.cpp:` la secuencia `add(10)`, `add(20)`, `push(5)` seguida de `peek()`, `pop()` y `remove()` deja más clara la coexistencia de pila y cola.
+
+2. En `demo_dllist.cpp`, ¿qué operación muestra mejor la inserción en una posición intermedia?
+
+ La operación `add(1, 20)` es la que mejor muestra inserción en posición intermedia.
+
+3. En `demo_selist.cpp`, ¿qué observable permite defender que la lista mantiene orden lógico aunque internamente trabaje por bloques?
+ 
+ El observable `get(i)` que devuelve valores en orden lógico (`0 10 20 ... 90`) defiende que la lista mantiene orden aunque trabaje por bloques.
+
+4. En `demo_deng_list.cpp`, ¿qué evidencia muestra que la lista reforzada por Deng ofrece operaciones más cercanas a un ADT de lista completo?
+  
+ La evidencia es que se muestran `front`, `back`, tamaño y luego `sort()` + `to_vector()`, lo que indica operaciones de lista completas.
+
+5. En `demo_morin_deng_bridge.cpp`, ¿qué parte de la salida permite justificar que se reutilizan algoritmos sin reescribir la estructura base?
+
+ La parte de salida que muestra la lista ordenada y el `removed = ...` tras aplicar `stable_sort_with_deng` y `dedup_with_deng` justifica la reutilización de algoritmos sobre la misma estructura base.
+
+6. En `demo_min_structures.cpp`, ¿qué diferencia conceptual observan entre almacenar valores y almacenar información adicional para responder `min()`?
+  
+ La diferencia conceptual es que guardar valores permite solo operaciones normales, mientras que almacenar información adicional permite responder `min()`rápidamente sin recorrer toda la estructura.
+
+7. En `demo_linked_adapters.cpp`, ¿qué adaptador representa mejor la idea de reutilizar una estructura existente para ofrecer una interfaz nueva?
+
+ El adaptador `LinkedStack` representa mejor la idea de reutilizar una estructura existente para ofrecer una interfaz nueva, aunque `LinkedQueue` y `LinkedDeque` también lo hacen.
+
+8. En `demo_contiguous_vs_linked.cpp`, ¿qué contraste se observa entre acceso por índice, inserción local y localidad de memoria?
+
+ El contraste es que el acceso por índice es más directo en la estructura contigua (`ArrayDeque`), la inserción local es más natural en la estructura enlazada (`DLList`/`LinkedDeque`), y la memoria contigua ofrece mejor localidad frente a la dispersión de punteros en la lista enlazada.
+
