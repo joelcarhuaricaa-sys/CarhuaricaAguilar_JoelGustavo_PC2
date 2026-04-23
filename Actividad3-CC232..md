@@ -469,3 +469,14 @@ consulta de mínimo?
 
  Introduce mayor complejidad en la implementación y mantenimiento, con riesgo de errores en manipulación de punteros XOR, falta de compatibilidad con recolectores de basura estándar, y dificultad para depuración, ya que no es una estructura común y requiere cuidado extra en operaciones.
 
+#### BLOQUE8 - CIERRE COMPARATIVO Y PREPARACION DE SUSTENTACION
+
+¿Qué cambia cuando pasamos de "usar arreglos dinámicos" a "diseñar estructuras enlazadas y adaptadores sobre nodos"?
+
+ - **Una afirmación sobre representación**: La representación cambia de un bloque contiguo de memoria en arreglos dinámicos a nodos independientes conectados por punteros en estructuras enlazadas, lo que permite crecimiento flexible pero introduce overhead por referencias.
+ - **Una afirmación sobre acceso por rango frente a acceso por posición**: En arreglos dinámicos, el acceso por rango (índice directo) es O(1), mientras que en estructuras enlazadas el acceso por posición requiere traversal O(n) desde un extremo o enlace, priorizando referencias sobre índices.
+ - **Una afirmación sobre inserciones y eliminaciones locales**: Las inserciones y eliminaciones locales son más eficientes en estructuras enlazadas (O(1) en extremos), ya que solo ajustan punteros, en contraste con arreglos dinámicos que requieren desplazamientos O(n) para mantener contigüidad.
+ - **Una afirmación sobre complejidad de `SLList`, `DLList` y `SEList`**: `SLList` ofrece complejidad O(1) para operaciones de pila y cola; `DLList` permite acceso y modificación en O(1 + min(i, n-i)) aprovechando enlaces bidireccionales; `SEList` combina bloques para acceso amortizado O(1 + i/b) y actualizaciones locales eficientes, equilibrando espacio y tiempo.
+ - **Una afirmación sobre reutilización mediante adaptadores o puentes**: La reutilización mediante adaptadores (como `LinkedStack` sobre `SLList`) o puentes (como `MorinDengBridge`) permite implementar interfaces nuevas sobre estructuras existentes sin reescribir lógica, facilitando composición y evitando duplicación de código.
+ - **Una comparación entre representación contigua y enlazada**: La representación contigua (arreglos) favorece acceso aleatorio y localidad de memoria para recorridos secuenciales, mientras que la enlazada prioriza modificaciones locales y flexibilidad espacial, con trade-offs en complejidad y overhead.
+ 
