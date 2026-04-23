@@ -49,7 +49,7 @@
 
 | Archivo |	Salida u observable importante | Idea estructural |	Argumento de costo, espacio o diseño |
 |---|---|---|---|
-`demo_sllist.cpp` | `size = 3`, `peek = 5`, `pop = 5`, `remove = 20` | `SLList` combina operaciones de pila y cola en una sola lista enlazada simple |	`push` / `pop` trabaja como stack en el frente; `add` / `remove` aporta comportamiento de cola en el otro extremo.|
+|`demo_sllist.cpp` | `size = 3`, `peek = 5`, `pop = 5`, `remove = 20` | `SLList` combina operaciones de pila y cola en una sola lista enlazada simple |	`push` / `pop` trabaja como stack en el frente; `add` / `remove` aporta comportamiento de cola en el otro extremo.|
 |`demo_dllist.cpp`|	Impresión `10 20 30` tras `add(0,10)`, `add(1,30)`, `add(1,20)` | `DLList` usa doble enlace + dummy para insertar en medio con eficiencia | `add(i,x)` en posición intermedia se justifica por recorrido desde el extremo cercano `O(1 + min(i,n-i))`.|
 |`demo_selist.cpp`|	Impresión ordenada `0 10 20 30 40 50 60 70 80 90`| 	`SEList` mantiene el orden lógico de lista aunque internamente use bloques | El acceso lógico `get(i)` sigue devolviendo la secuencia ordenada, mostrando que la fragmentación en bloques es transparente.|
 |`demo_deng_list.cpp` | `size`, `front`, `back`, luego lista ordenada tras `sort()` | `DengList` ofrece lista reforzada con operaciones de lista completas | `push_back`, `push_front`, `front`, `back` y `sort()` muestran un ADT de lista más rico que solo un contenedor básico.|
@@ -183,7 +183,7 @@ Los algoritmos son agnósticos a la estructura subyacente si existe un contrato 
        - El tamaño se mantiene consistente
        
        - Las relaciones de orden (FIFO, LIFO) se respetan
-       
+
        - La estructura no crash en operaciones secuenciales 
 
     ✅ Correctitud local:
@@ -227,3 +227,249 @@ Porque:
 
   5. **Reutilización confiable**: Cuando adaptes la estructura (ejemplo: SEList a BDeque), necesitas entender los invariantes para no romper la abstracción
 
+#### BLOQUE4 - SLLIST, DLLIST Y SELIST: LECTURA CERCANA DEL CODIGO
+
+1. En `SLList`, ¿qué papel cumplen `head`, `tail` y `n`?
+
+ `head`: Puntero al primer nodo de la lista. Permite acceso rápido al inicio para operaciones de pila (`push` / `pop`).
+
+ `tail`: Puntero al último nodo. Permite agregar elementos al final en tiempo constante sin recorrer toda la lista.
+
+ `n`: Contador del número de elementos. Permite responder `size()` sin recorrer la estructura y facilita validaciones.
+
+2. En `SLList::push`, `pop`, `add` y `remove`, ¿qué punteros cambian exactamente?
+
+ | **Operación** | **Punteros que cambian** |
+ |---|---|
+ | `push(x)` |	`head` (apunta al nuevo nodo), `tail` (solo si `n==0`), `n` |
+ | `pop()` | `head` (avanza al siguiente), `tail` (solo si `n==1`), `n` |
+ | `add(x)` (al final) | `tail->next` (apunta al nuevo), `tail` (avanza), `n` |
+ | `remove()` (frontal) | `head` (avanza), `tail` (solo si `n==1`), `n` |
+
+3. Expliquen cómo funciona `secondLast()` y por qué no puede resolverse directamente con solo mirar `tail`.
+
+T secondLast() const { 
+     assert(n >= 2);
+     Node* u = head;
+     while (u->next != tail) { // Busca hasta encontrar el penúltimo
+        u = u->next;
+     }
+     return u->x;
+}
+
+- Por qué no funciona con solo `tail`:
+
+    - `tail` solo apunta al último nodo, no al penúltimo.
+    - En una lista **simplemente enlazad a**, cada nodo solo conoce al siguiente, no al anterior.
+    - Para encontrar el penúltimo, necesariamente hay que recorrer desde `head` hasta llegar a un nodo cuyo `next` sea `tail`.
+    - Costo:**O(n)**.
+
+4. Expliquen paso a paso cómo funciona`reverse()` y por qué no necesita estructura auxiliar.
+
+void reverse() {
+    Node* prev = nullptr;    // Nodo "anterior" en el orden nuevo
+    Node* curr = head;       // Nodo actual siendo procesado
+    tail = head;             // El head será el nuevo tail
+    
+    while (curr != nullptr) {
+        Node* next = curr->next;  // Guarda el siguiente antes de cambiar
+        curr->next = prev;         // Invierte: apunta hacia atrás
+        prev = curr;               // Avanza prev
+        curr = next;               // Avanza curr
+    }
+    head = prev;              // prev quedó apuntando al último nodo
+}
+
+**Por que no necesita estructura auxiliar:**
+
+  - Solo necesita tres punteros temporales (`prev`, `curr`, `next`).
+  - Reutiliza el mismo espacio de nodos sin crear nuevos.
+  - Los cambios de referencias se hacen **in-place**.
+  - Costo: **O(n)** tiempo, **O(1)** espacio adicional.
+
+5. Expliquen qué verifica `checkSize()` y por qué esta función ayuda a defender correctitud.
+
+bool checkSize() const {
+    int count = 0;
+    Node* u = head;
+    Node* last = nullptr;
+    
+    while (u != nullptr) {
+        last = u;
+        u = u->next;
+        ++count;  // Cuenta elementos reales
+    }
+    
+    // Valida que el contador coincida
+    if (count != n) return false;
+    
+    // Valida casos extremos
+    if (n == 0) return head == nullptr && tail == nullptr;
+    
+    // Valida que tail apunte realmente al último
+    return head != nullptr && tail == last;
+}
+
+**Ayuda defender correctitud porque:**
+
+   - Detecta corrupción del contador `n`.
+   - Verifica que `tail` realmente apunte al último nodo.
+   - Identifica invariantes rotos (cabeza y cola inconsistentes).
+   - Es esencial para pruebas de estrés y debugging.
+
+6. En `DLList`, expliquen por qué `getNode(i)` puede empezar desde el inicio o desde el final.
+
+Node* getNode(int i) {
+    assert(0 <= i && i <= n);
+    Node* p;
+    
+    if (i < n / 2) {           // Si está en la primera mitad
+        p = dummy.next;        // Empieza desde el inicio
+        for (int j = 0; j < i; ++j) p = p->next;
+    } else {                   // Si está en la segunda mitad
+        p = &dummy;            // Empieza desde el final (dummy es circular)
+        for (int j = n; j > i; --j) p = p->prev;  // Retrocede
+    }
+    return p;
+}
+
+**Ventaja:**
+
+  - Para elementos cercanos al final, retroceder es más rápido que avanzar.
+  - Reduce el número de saltos a approximately `min(i, n-i)`.
+  - Costo amortizado: **O(1 + min(i, n-i))**.
+
+7. En `DLList::addBefore`, ¿qué enlaces se actualizan y por qué el nodo centinela elimina casos borde?
+
+Node* addBefore(Node* w, const T& x) {
+    Node* u = new Node{x, w->prev, w};  // Crear nodo con ambos enlaces
+    u->prev->next = u;  // El anterior de w ahora apunta a u
+    u->next->prev = u;  // w ahora tiene a u como anterior
+    ++n;
+    return u;
+}
+
+**Enlaces actualizados:**
+
+   1. `u->prev` y `u->next` (del nodo nuevo)
+   2. `(u->prev)->next` (enlace forward del anterior)
+   3. `(u->next)->prev` (enlace backward de w)
+
+Por qué `dummy` elimina casos borde:
+
+   - No hay que distinguir inserción al inicio vs. en medio.
+   - `dummy` es simultáneamente predecesor del primero y sucesor del último.
+   - La lista vacía se trata uniformemente: todos los nodos apuntan a `dummy`.
+   - Simplifica la lógica: una sola función para todas las posiciones.
+
+8. Expliquen cómo funciona `rotate(r)` sin mover los datos elemento por elemento.
+
+void rotate(int r) {
+    if (n <= 1) return;
+    r %= n;
+    if (r == 0) return;
+    
+    // Identifica dónde cortar
+    Node* oldFirst = dummy.next;      // Primer nodo actual
+    Node* oldLast = dummy.prev;       // Último nodo actual
+    Node* newFirst = getNode(n - r);  // Nuevo primer nodo (r posiciones del final)
+    Node* newLast = newFirst->prev;   // Lo que era antes del nuevo primero
+    
+    // Reorganiza enlaces sin mover datos
+    oldLast->next = oldFirst;         // Cierra el ciclo
+    oldFirst->prev = oldLast;
+    newLast->next = &dummy;           // Nuevo corte
+    dummy.prev = newLast;
+    dummy.next = newFirst;
+    newFirst->prev = &dummy;
+}
+
+**Sin mover datos:**
+
+  - Los valores dentro de los nodos permanecen intactos.
+  - Solo se cambian los enlaces de 4-6 punteros.
+  - Costo: O(1) después de encontrar `newFirst` (que cuesta `O(min(n-r, r))`).
+
+9. Expliquen cómo `isPalindrome()` aprovecha la naturaleza doblemente enlazada de la estructura.
+
+bool isPalindrome() const {
+    const Node* left = dummy.next;    // Empieza desde el inicio
+    const Node* right = dummy.prev;   // Empieza desde el final
+    
+    for (int i = 0; i < n / 2; ++i) {
+        if (!(left->x == right->x)) {  // Compara elementos opuestos
+            return false;
+        }
+        left = left->next;             // Avanza desde el inicio
+        right = right->prev;           // Retrocede desde el final
+    }
+    return true;
+}
+
+**Ventaja de ser doblemente enlazada:**
+
+  - Puede recorrer simultáneamente desde ambos extremos.
+  - En una lista simple, verificar palíndrome requeriría almacenar valores o invertir.
+  - Aquí: solo usa dos punteros y una comparación, costo **O(n/2)**.
+
+10. En `SEList`, expliquen qué representa `Location`.
+
+struct Location {
+    Node* u;  // Puntero al bloque (nodo) que contiene el elemento
+    int j;    // Índice dentro del bloque
+};
+
+**Propósito:**
+
+  - Descompone un índice global `i` en dos coordenadas.
+  - `i` se traduce a "estar en el bloque `u`, en posición `j` dentro del bloque".
+  - Permite acceder directamente a un elemento sin recorrer toda la lista.
+  - Ejemplo: si bloques tienen tamaño 3 e `i=7` → bloque 2, posición 1 dentro del bloque.
+
+11. Expliquen qué hacen `spread()` y `gather()` y en qué situaciones aparecen.
+
+`spread(Node* u)` - Expande cuando los bloques están llenos
+
+void spread(Node* u) {
+    // Crea b nodos nuevos
+    Node* w = u;
+    for (int j = 0; j < b; ++j) w = w->next;
+    w = addBefore(w);
+    
+    // Redistribuye elementos: mueve del penúltimo al nuevo bloque
+    while (w != u) {
+        while (w->d.size() < b) {
+            w->d.add(0, w->prev->d.remove(w->prev->d.size() - 1));
+        }
+        w = w->prev;
+    }
+}
+
+**Cuándo aparece:** Al insertar en una posición donde hay bloques llenos.
+`gather(Node* u)` - Compacta cuando los bloques están vacíos
+
+void gather(Node* u) {
+    // Mueve elementos hacia atrás desde bloques casi vacíos
+    Node* w = u;
+    for (int j = 0; j < b - 1; ++j) {
+        while (w->d.size() < b) {
+            w->d.add(w->next->d.remove(0));
+        }
+        w = w->next;
+    }
+    removeNode(w);  // Elimina el bloque ahora vacío
+}
+
+**Cuándo aparece:** Al eliminar, si un bloque cae por debajo del umbral mínimo.
+
+12. Expliquen cómo el tamaño de bloque `b` afecta compromiso entre acceso, actualización y uso de espacio.
+
+| **Aspecto** | **Pequeño** `b` | **Grande** `b` |
+|---|---|---|
+| **Acceso a índice** | Más saltos entre bloques (peor) | Menos saltos (mejor) |
+| **Inserción/eliminación** | `spread`/`gather` menos frecuentes (mejor) |  Más costosos cuando ocurren (peor) |
+| **Uso de memoria**| Menos desperdicio por sobrecarga de referencias |	Más bloques subutilizados (peor) |
+|**Localidad de caché**| Peor (bloques pequeños) | Mejor (bloques grandes explotan caché) |
+| **Costo amortizado** | O(n) peor distribución | O(n) mejor distribución |
+
+Compromiso óptimo: b ≈ sqrt(n) o configuración estática (típicamente 3-5) da buen balance general.
