@@ -181,7 +181,7 @@
 
 5. ¿Qué se gana en espacio frente a `ArrayStack`?
 
- Se gana en espacio al reducir el desperdicio: en lugar de reservar un arreglo grande con capacidad potencialmente mucho mayor que el tamaño actual (como en ArrayStack con duplicación), RootishArrayStack usa bloques de tamaños variables que se ajustan mejor al número de elementos, minimizando el espacio no utilizado.
+ Se optimiza el aprovechamiento de la memoria al disminuir la capacidad excedente: a diferencia del ArrayStack, que reserva espacios masivos mediante la duplicación, el RootishArrayStack emplea bloques de dimensiones progresivas que se adaptan con precisión al volumen real de datos, mitigando la ineficiencia espacial.
 
 6. ¿Qué se conserva igual respecto a la interfaz?
 

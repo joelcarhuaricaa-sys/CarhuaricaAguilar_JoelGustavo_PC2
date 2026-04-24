@@ -467,7 +467,7 @@ consulta de mínimo?
 
 7. ¿Qué desventaja práctica introduce una estructura como `XorList` aunque sea interesante desde el punto de vista del espacio?.
 
- Introduce mayor complejidad en la implementación y mantenimiento, con riesgo de errores en manipulación de punteros XOR, falta de compatibilidad con recolectores de basura estándar, y dificultad para depuración, ya que no es una estructura común y requiere cuidado extra en operaciones.
+ Esta estructura eleva la dificultad técnica tanto en su desarrollo como en su conservación, conlleva el peligro de fallos por la gestión de punteros XOR, carece de soporte nativo para la recolección automática de memoria y complica el rastreo de errores al ser un diseño poco convencional que exige una precisión extrema.
 
 #### BLOQUE8 - CIERRE COMPARATIVO Y PREPARACION DE SUSTENTACION
 

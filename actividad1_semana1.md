@@ -246,7 +246,8 @@ Respondan esta pregunta final:
 
    4. Afirmación de Representación o Memoria
    
-      Esta es la ruptura más grande con la teoría pura. La evidencia experimental demuestra que la representación en memoria es tan vital como el algoritmo mismo. Comprobamos empíricamente que mantener una estructura de datos de memoria contigua (std::vector) y explotar la localidad espacial para complacer a la memoria Caché de la CPU supera brutalmente a representaciones fragmentadas (std::list), incluso cuando matemáticamente comparten la misma complejidad $O(n)$. 
+     Este hallazgo constituye la mayor divergencia respecto a la teoría abstracta: los datos empíricos confirman que la organización física de la información es tan determinante como la lógica del algoritmo, demostrando que priorizar la localidad espacial mediante bloques de memoria contiguos aventaja drásticamente a las estructuras enlazadas, a pesar de que ambas posean una complejidad asintótica equivalente.
+     Esta es la ruptura más grande con la teoría pura. La evidencia experimental demuestra que la representación en memoria es tan vital como el algoritmo mismo. Comprobamos empíricamente que mantener una estructura de datos de memoria contigua (std::vector) y explotar la localidad espacial para complacer a la memoria Caché de la CPU supera brutalmente a representaciones fragmentadas (std::list), incluso cuando matemáticamente comparten la misma complejidad $O(n)$.
 
    5. Advertencia Metodológica
    
