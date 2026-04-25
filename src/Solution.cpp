@@ -36,4 +36,8 @@ std::vector<std::string> Solution::findWords(std::vector<std::vector<char>>& boa
 
     return std::vector<std::string>(foundList.begin(), foundList.end());
 }
-  
+void Solution::backtracking(int r, int c, TrieNode* node, string word, ...) {
+    //  Límites y Poda
+    if (r < 0 || c < 0 || r >= ROWS || c >= COLS || board[r][c] == '#' || !node->children[board[r][c]-'a']) return;
+
+    
