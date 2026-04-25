@@ -43,14 +43,11 @@ void Solution::backtracking(int r, int c, TrieNode* node, std::string word,
     if (r < 0 || c < 0 || r >= ROWS || c >= COLS || board[r][c] == '#' || !node->children[board[r][c] - 'a']) {
         return;
     }
-    
+
     char temp = board[r][c];
     node = node->children[temp - 'a'];
     word += temp;
 
-    if (node->isWord) {
-        foundList.push_back(word);
-        node->isWord = false; 
-    }
+    
 
     board[r][c] = '#'; 
