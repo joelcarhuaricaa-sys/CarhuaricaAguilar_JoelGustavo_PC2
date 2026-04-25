@@ -24,6 +24,16 @@ std::vector<std::string> Solution::findWords(std::vector<std::vector<char>>& boa
         cur->isWord = true; // Marcamos el final de una palabra válida
     }
 
-    // Por ahora retornamos vacío para que el commit sea solo de la estructura
-    return {}; 
+    int ROWS = board.size();
+    int COLS = board[0].size();
+    std::list<std::string> foundList; 
+
+    for (int r = 0; r < ROWS; r++) {
+        for (int c = 0; c < COLS; c++) {
+            backtracking(r, c, root, "", board, foundList, ROWS, COLS);
+        }
+    }
+
+    return std::vector<std::string>(foundList.begin(), foundList.end());
 }
+  
