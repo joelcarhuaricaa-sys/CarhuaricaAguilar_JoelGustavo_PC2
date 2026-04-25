@@ -48,7 +48,10 @@ void Solution::backtracking(int r, int c, TrieNode* node, std::string word,
     node = node->children[temp - 'a'];
     word += temp;
 
-    
+     if (node->isWord) {
+        foundList.push_back(word);
+        node->isWord = false; 
+    }
 
     board[r][c] = '#'; 
  
@@ -56,3 +59,6 @@ void Solution::backtracking(int r, int c, TrieNode* node, std::string word,
     backtracking(r - 1, c, node, word, board, foundList, ROWS, COLS);
     backtracking(r, c + 1, node, word, board, foundList, ROWS, COLS);
     backtracking(r, c - 1, node, word, board, foundList, ROWS, COLS);
+
+    board[r][c] = temp; 
+}
