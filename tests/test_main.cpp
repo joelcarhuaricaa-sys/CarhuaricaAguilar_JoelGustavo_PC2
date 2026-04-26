@@ -19,8 +19,31 @@ void test_caso_basico() {
     std::cout << "[PASSED] Test Caso Basico" << std::endl;
 }
 
-void test_sin_coincidencias();
-void test_palabra_larga();
+void test_sin_coincidencias() {
+    Solution sol;
+    // Tablero con letras que no forman nada útil
+    std::vector<std::vector<char>> board = {{'x','y'},{'z','w'}};
+    std::vector<std::string> words = {"hola", "mundo"};
+    
+    std::vector<std::string> res = sol.findWords(board, words);
+    
+    // El resultado debe ser una lista vacía
+    assert(res.empty());
+    std::cout << "[PASSED] Test Sin Coincidencias" << std::endl;
+}
+void test_palabra_larga(){
+    Solution sol;
+    // Tablero de una sola fila
+    std::vector<std::vector<char>> board = {{'a','b','c'}};
+    // Palabra de 4 letras (imposible de formar en un tablero de 3 celdas)
+    std::vector<std::string> words = {"abcd"}; 
+    
+    std::vector<std::string> res = sol.findWords(board, words);
+    
+    // Debe retornar vacío y no causar un "out of bounds" (desbordamiento)
+    assert(res.empty());
+    std::cout << "[PASSED] Test Palabra Fuera de Limites" << std::endl;
+}
 
 int main() {
     std::cout << "--- Iniciando Pruebas Unitarias ---" << std::endl;
