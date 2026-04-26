@@ -12,7 +12,7 @@
 2. Expliquen la diferencia entre acceso por rango y acceso por posición o enlace.
 
  El **acceso por rango** (o índice) permite localizar un elemento directamente mediante una posición numérica (ej. get(i)), aprovechando la contigüidad en memoria para cálculos aritméticos rápidos. **El acceso por posición** o enlace navega mediante punteros entre nodos, siendo más flexible para modificaciones locales pero menos eficiente para posiciones arbitrarias, ya que implica recorridos secuenciales.
-
+ 
 3. Expliquen por qué una lista enlazada mejora inserciones y eliminaciones locales, pero empeora el acceso por índice.
 
  En una lista enlazada, las inserciones y eliminaciones locales son eficientes porque solo requieren ajustar punteros de nodos adyacentes, sin desplazar otros elementos. Sin embargo, el acceso por índice empeora porque no hay contigüidad; se debe recorrer la lista desde el inicio hasta la posición deseada, resultando en tiempo lineal en el peor caso.
