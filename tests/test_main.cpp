@@ -12,7 +12,7 @@ void test_palabra_larga();
 int main() {
     std::cout << "--- Iniciando Pruebas Unitarias ---" << std::endl;
     
-    // Las llamadas a las funciones se comentan o se dejan para el siguiente commit
+    // Las llamadas a las funciones se comentan o se dejan para el siguiente commit que hare
     // test_caso_basico();
     
     std::cout << "--- Pruebas finalizadas ---" << std::endl;
