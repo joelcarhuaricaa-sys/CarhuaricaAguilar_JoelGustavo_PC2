@@ -46,10 +46,10 @@ void test_palabra_larga(){
 }
 
 int main() {
-    std::cout << "--- Iniciando Pruebas Unitarias ---" << std::endl;
-    
-    test_caso_basico(); // <--- Ahora sí la llamamos
-    
-    std::cout << "--- Pruebas finalizadas ---" << std::endl;
+    std::cout << "--- Ejecutando Pruebas Unitarias ---" << std::endl;
+    test_caso_basico();
+    test_sin_coincidencias();  
+    test_palabra_larga();      
+    std::cout << "--- Todas las pruebas pasaron con exito ---" << std::endl;
     return 0;
 }
