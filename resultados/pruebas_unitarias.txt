@@ -1,0 +1,5 @@
+--- Ejecutando Pruebas Unitarias ---
+[PASSED] Test Caso Basico
+[PASSED] Test Sin Coincidencias
+[PASSED] Test Palabra Fuera de Limites
+--- Todas las pruebas pasaron con exito ---
