@@ -1,0 +1,8 @@
+===========================================   
+   BENCHMARK DE RENDIMIENTO: findWords     
+===========================================
+Detalles de la prueba:
+ - Tamano del tablero: 10x10
+ - Palabras procesadas: 500
+-------------------------------------------
+TIEMPO DE EJECUCION: 2.86687 ms
