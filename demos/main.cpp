@@ -25,7 +25,7 @@ int main() {
         std::cout << "No se encontraron palabras." << std::endl;
     } else {
         for (const std::string& s : result) {
-            std::cout << "[ENCONTRADA]: " << s << std::endl;
+            std::cout << "[ENCONTRADO EXITO]: " << s << std::endl;
         }
     }
 
