@@ -7,6 +7,14 @@
 ## Instrucciones de Compilación
 Desde la raíz del proyecto (`CARHUARICAAGUILAR_JOELGUSTAVO_PC2`), ejecuta los siguientes comandos en tu terminal:
 
-1. Crear carpeta de compilación:
-   ```bash
-   mkdir build && cd build
+### Compilación
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+### Ejecución
+```bash
+./build/tu_programa
+```
+   
