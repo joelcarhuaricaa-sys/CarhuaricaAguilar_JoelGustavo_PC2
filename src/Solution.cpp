@@ -40,10 +40,13 @@ void Solution::backtracking(int r, int c, TrieNode* node, std::string word,
                              std::vector<std::vector<char>>& board, std::list<std::string>& foundList, 
                              int ROWS, int COLS) {
     
-    if (r < 0 || c < 0 || r >= ROWS || c >= COLS || board[r][c] == '#' || !node->children[board[r][c] - 'a']) {
-        return;
-    }
-
+    //if (r < 0 || c < 0 || r >= ROWS || c >= COLS || board[r][c] == '#' || !node->children[board[r][c] - 'a']) {
+    //    return;
+    //}
+    // CAMBIO EN VIVO: Quitamos la validación del Trie (Poda)
+    if (r < 0 || c < 0 || r >= ROWS || c >= COLS || board[r][c] == '#') {
+    return; //sin el trie la solucion se vuelve ingenua buscando cada palabra del diccionario una por una usando un simple Backtracking
+}
     char temp = board[r][c];
     node = node->children[temp - 'a'];
     word += temp;
