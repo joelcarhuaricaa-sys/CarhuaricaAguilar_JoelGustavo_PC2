@@ -9,14 +9,14 @@ void run_benchmark() {
     
     // 1. Definición del escenario de prueba (Stress Test)
     // Tablero de 10x10 lleno de la letra 'a' para maximizar la recursión
-    std::vector<std::vector<char>> board(10, std::vector<char>(10, 'a'));
+    std::vector<std::vector<char>> board(50, std::vector<char>(50, 'a'));
     
     // Diccionario de prueba: 500 variantes de la palabra "aaaaa"
     std::vector<std::string> words;
     for(int i = 0; i < 500; ++i) {
-        words.push_back(std::string(5, 'a')); 
+        words.push_back(std::string(15, 'a')); 
     }
-
+    words.push_back("aaaaaaaaaaaaaaz");
     std::cout << "===========================================" << std::endl;
     std::cout << "   BENCHMARK DE RENDIMIENTO: findWords     " << std::endl;
     std::cout << "===========================================" << std::endl;
